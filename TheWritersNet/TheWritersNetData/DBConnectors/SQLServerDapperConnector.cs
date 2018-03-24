@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 using System.Data;
 using Dapper;
 using TheWritersNetData.Models;
+using TheWritersNetData.Models.Websites;
 
 namespace TheWritersNetData.DBConnectors
 {
-    public class SQLServerDapperConnector : IDBConnector
+    class SQLServerDapperConnector : IDBConnector
     {
         private string connectionString = @"Server=localhost\SQLEXPRESS;Database=TheWritersNetDB;Trusted_Connection=True;";
 
-        public void InsertUser(string loginID)
+        public void InsertUser(UserModel user)
         {
-            List<UserModel> users = new List<UserModel>() { new UserModel() { LoginID = loginID } };
+            List<UserModel> users = new List<UserModel>() { user };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spUser_Insert @LoginID", users);
+                connection.Execute("WebsiteData.spUser_Insert @LoginID, @UserName", users);
             }
         }
 
@@ -45,21 +46,37 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public void InsertWebsite(WebsiteModel website)
+        public void InsertWebsite(NewWebsiteModel website)
         {
-            List<WebsiteModel> websites = new List<WebsiteModel>() { website };
+            List<NewWebsiteModel> websites = new List<NewWebsiteModel>() { website };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute(" WebsiteData.spWebsite_Insert @Title, @Owner, @Visibility, @Description", websites);
+                connection.Execute("WebsiteData.spWebsite_Insert @Title, @LoginID, @Visibility, @Description", websites);
             }
         }
 
-        public List<WebsiteModel> GetWebsites(int userID)
+        public void DeleteWebsite(int websiteID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<WebsiteModel>("WebsiteData.spWebsite_Select @UserID", new { UserID = userID }).ToList();
+                connection.Execute("WebsiteData.spWebsite_Delete @WebsiteID", new { WebsiteID = websiteID });
+            }
+        }
+
+        public List<UserWebsiteModel> SelectUserWebsites(string loginID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<UserWebsiteModel>("WebsiteData.spWebsite_SelectForUser @LoginID", new { LoginID = loginID }).ToList();
+            }
+        }
+
+        public List<PublicWebsiteModel> SelectPublicWebsites()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<PublicWebsiteModel>("WebsiteData.spWebsite_SelectPublic").ToList();
             }
         }
     }

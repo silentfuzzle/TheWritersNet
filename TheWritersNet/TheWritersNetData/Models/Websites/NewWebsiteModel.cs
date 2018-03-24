@@ -4,17 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TheWritersNetData.Models
+namespace TheWritersNetData.Models.Websites
 {
-    public class WebsiteModel
+    public class NewWebsiteModel
     {
         public int WebsiteID { get; set; }
 
         public string Title { get; set; }
 
-        public int HomePage { get; set; }
-
-        public int Owner { get; set; }
+        public string LoginID { get; set; }
 
         public int Visibility { get; set; }
 

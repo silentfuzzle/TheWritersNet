@@ -8,6 +8,7 @@ CREATE TABLE WebsiteData.[User]
 (
 	UserID int NOT NULL IDENTITY PRIMARY KEY,
 	LoginID nvarchar(50) NOT NULL,
+	UserName nvarchar(50) NOT NULL,
 	[Description] nvarchar(1000)
 );
 
@@ -80,7 +81,7 @@ CREATE TABLE WebsiteData.Ability
 
 USE TheWritersNetDB;
 INSERT INTO WebsiteData.Ability ([Name])
-VALUES ('Admin'), ('Writer'), ('Viewer');
+VALUES ('Owner'), ('Admin'), ('Writer'), ('Viewer');
 
 USE TheWritersNetDB;
 CREATE TABLE WebsiteData.WebsitePermission

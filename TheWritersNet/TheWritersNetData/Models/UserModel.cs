@@ -12,6 +12,8 @@ namespace TheWritersNetData.Models
 
         public string LoginID { get; set; }
 
+        public string UserName { get; set; }
+
         public string Description { get; set; }
     }
 }

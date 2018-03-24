@@ -4,19 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TheWritersNetData.Models;
+using TheWritersNetData.Models.Websites;
 
-namespace TheWritersNetData
+namespace TheWritersNetData.DBConnectors
 {
     public interface IDBConnector
     {
-        void InsertUser(string loginID);
+        void InsertUser(UserModel user);
 
         UserModel GetUser(string loginID);
 
         void InsertPermission(PermissionModel permission);
 
-        void InsertWebsite(WebsiteModel website);
+        void InsertWebsite(NewWebsiteModel website);
 
-        List<WebsiteModel> GetWebsites(int userID);
+        void DeleteWebsite(int websiteID);
+
+        List<UserWebsiteModel> SelectUserWebsites(string loginID);
+
+        List<PublicWebsiteModel> SelectPublicWebsites();
     }
 }

@@ -1,0 +1,9 @@
+DROP PROCEDURE WebsiteData.spWebsite_SelectPublic;
+DROP PROCEDURE WebsiteData.spWebsite_SelectForUser;
+DROP PROCEDURE WebsiteData.spWebsite_Delete;
+DROP PROCEDURE WebsiteData.spWebsite_Insert;
+DROP PROCEDURE WebsiteData.spTag_DeleteEmpty;
+DROP PROCEDURE WebsiteData.spPermission_Insert;
+DROP PROCEDURE WebsiteData.spUser_Select;
+DROP PROCEDURE WebsiteData.spUser_SelectID;
+DROP PROCEDURE WebsiteData.spUser_Insert;
