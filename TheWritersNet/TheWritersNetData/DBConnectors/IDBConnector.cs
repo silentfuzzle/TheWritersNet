@@ -10,11 +10,19 @@ namespace TheWritersNetData.DBConnectors
 {
     public interface IDBConnector
     {
+        #region Users
+
         void InsertUser(UserModel user);
 
-        UserModel GetUser(string loginID);
+        void UpdateUser(UserModel user);
+
+        UserModel SelectUser(string loginID);
+
+        #endregion
 
         void InsertPermission(PermissionModel permission);
+
+        #region Websites
 
         void InsertWebsite(NewWebsiteModel website);
 
@@ -23,5 +31,7 @@ namespace TheWritersNetData.DBConnectors
         List<UserWebsiteModel> SelectUserWebsites(string loginID);
 
         List<PublicWebsiteModel> SelectPublicWebsites();
+
+        #endregion
     }
 }

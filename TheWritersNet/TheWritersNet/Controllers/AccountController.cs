@@ -164,9 +164,14 @@ namespace TheWritersNet.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    
+
+                    int atSign = user.UserName.IndexOf('@');
+                    string userName = user.UserName;
+                    if (atSign != -1)
+                        userName = user.UserName.Substring(0, atSign + 1);
+
                     IDBConnector db = DBConnectorFactory.GetDBConnector();
-                    db.InsertUser(new UserModel() { LoginID = user.Id, UserName = user.UserName });
+                    db.InsertUser(new UserModel() { LoginID = user.Id, UserName = userName });
 
                     return RedirectToAction("Index", "Home");
                 }

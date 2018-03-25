@@ -14,6 +14,8 @@ namespace TheWritersNetData.DBConnectors
     {
         private string connectionString = @"Server=localhost\SQLEXPRESS;Database=TheWritersNetDB;Trusted_Connection=True;";
 
+        #region Users
+
         public void InsertUser(UserModel user)
         {
             List<UserModel> users = new List<UserModel>() { user };
@@ -24,7 +26,17 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public UserModel GetUser(string loginID)
+        public void UpdateUser(UserModel user)
+        {
+            List<UserModel> users = new List<UserModel>() { user };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spUser_Update @LoginID, @UserName, @Description", users);
+            }
+        }
+
+        public UserModel SelectUser(string loginID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -36,6 +48,8 @@ namespace TheWritersNetData.DBConnectors
             return null;
         }
 
+        #endregion
+
         public void InsertPermission(PermissionModel permission)
         {
             List<PermissionModel> permissions = new List<PermissionModel>() { permission };
@@ -45,6 +59,8 @@ namespace TheWritersNetData.DBConnectors
                 connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserID, @Ability", permissions);
             }
         }
+
+        #region Websites
 
         public void InsertWebsite(NewWebsiteModel website)
         {
@@ -79,5 +95,7 @@ namespace TheWritersNetData.DBConnectors
                 return connection.Query<PublicWebsiteModel>("WebsiteData.spWebsite_SelectPublic").ToList();
             }
         }
+
+        #endregion
     }
 }

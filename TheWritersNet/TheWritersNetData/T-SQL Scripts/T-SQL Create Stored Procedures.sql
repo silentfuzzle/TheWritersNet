@@ -7,6 +7,16 @@ AS
 	VALUES(@LoginID, @UserName)
 GO
 
+CREATE PROCEDURE WebsiteData.spUser_Update
+	@LoginID nvarchar(50), @UserName nvarchar(50), @Description nvarchar(1000)
+AS
+	SET NOCOUNT ON;
+
+	UPDATE WebsiteData.[User]
+	SET WebsiteData.[User].UserName = @UserName, WebsiteData.[User].Description = @Description
+	WHERE WebsiteData.[User].LoginID = @LoginID;
+GO
+
 CREATE PROCEDURE WebsiteData.spUser_SelectID
 		@LoginID nvarchar(50),
 		@UserID int OUTPUT

@@ -6,4 +6,5 @@ DROP PROCEDURE WebsiteData.spTag_DeleteEmpty;
 DROP PROCEDURE WebsiteData.spPermission_Insert;
 DROP PROCEDURE WebsiteData.spUser_Select;
 DROP PROCEDURE WebsiteData.spUser_SelectID;
+DROP PROCEDURE WebsiteData.spUser_Update;
 DROP PROCEDURE WebsiteData.spUser_Insert;
