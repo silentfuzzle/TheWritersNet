@@ -50,6 +50,8 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Permissions
+
         public void InsertPermission(PermissionModel permission)
         {
             List<PermissionModel> permissions = new List<PermissionModel>() { permission };
@@ -57,6 +59,24 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserID, @Ability", permissions);
+            }
+        }
+
+        public List<PermissionModel> SelectWebsitePermissions(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<PermissionModel>("WebsiteData.spPermission_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+            }
+        }
+
+        #endregion
+
+        public List<TagModel> SelectWebsiteTags(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<TagModel>("WebsiteData.spTags_SelectWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
             }
         }
 
@@ -97,5 +117,13 @@ namespace TheWritersNetData.DBConnectors
         }
 
         #endregion
+
+        public List<PageModel> SelectWebsitePages(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<PageModel>("WebsiteData.spPage_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+            }
+        }
     }
 }

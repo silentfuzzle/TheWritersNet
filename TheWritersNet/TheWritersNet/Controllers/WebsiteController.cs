@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using TheWritersNet.Models;
 using TheWritersNetData.DBConnectors;
 using TheWritersNetData.Models.Websites;
 
@@ -50,6 +51,25 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
+        public ActionResult Edit(UserWebsiteModel website)
+        {
+            WebsiteModel details = new WebsiteModel()
+            {
+                WebsiteID = website.WebsiteID,
+                Title = website.Title,
+                Visibility = website.VisibilityID,
+                Description = website.Description
+            };
+
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            details.Tags = db.SelectWebsiteTags(website.WebsiteID);
+            details.Pages = db.SelectWebsitePages(website.WebsiteID);
+            details.Permissions = db.SelectWebsitePermissions(website.WebsiteID);
+
+            return View(details);
+        }
+
+        [Authorize]
         public ActionResult Delete(UserWebsiteModel website)
         {
             return View(website);
@@ -57,10 +77,10 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Delete(int WebsiteID)
+        public ActionResult Delete(int websiteID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            db.DeleteWebsite(WebsiteID);
+            db.DeleteWebsite(websiteID);
 
             return RedirectToAction("MyWebsites");
         }

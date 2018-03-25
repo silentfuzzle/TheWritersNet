@@ -1,0 +1,152 @@
+﻿@model TheWritersNet.Models.WebsiteModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Website</h4>
+        <hr />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Visibility, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Visibility, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Visibility, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    
+    <h4>Tags</h4>
+    <p>
+        @Html.ActionLink("Create New", "Create", "Tag")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Tag
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Tags)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", item) |
+                    @Html.ActionLink("Delete", "Delete", item)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <h4>Pages</h4>
+
+    <p>
+        @Html.ActionLink("Create New", "Create", "Page")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Home Page
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Pages)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HomePage)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", item) |
+                    @Html.ActionLink("View", "Display", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", item)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <h4>User Permissions</h4>
+
+    <p>
+        @Html.ActionLink("Create New", "Create", "Permission")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                User Name
+            </th>
+            <th>
+                Permission
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Permissions)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ability)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", item) |
+                    @Html.ActionLink("Delete", "Delete", item)
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "MyWebsites")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

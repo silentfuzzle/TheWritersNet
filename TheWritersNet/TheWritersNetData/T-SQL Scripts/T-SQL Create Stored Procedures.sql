@@ -43,6 +43,17 @@ AS
 	VALUES(@WebsiteID, @UserID, @Ability)
 GO
 
+CREATE PROCEDURE WebsiteData.spPermission_Select
+	@WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT [User].UserID, [User].UserName, WebsitePermission.Ability
+	FROM WebsiteData.[User]
+	INNER JOIN WebsiteData.WebsitePermission ON [User].UserID = WebsitePermission.UserID
+	WHERE WebsitePermission.WebsiteID = @WebsiteID;
+GO
+
 CREATE PROCEDURE WebsiteData.spTag_DeleteEmpty
 AS
 	SET NOCOUNT ON;
@@ -50,6 +61,17 @@ AS
 	DELETE Tag
 	FROM WebsiteData.Tag
 	WHERE Tag.NumUsers = 0 AND Tag.NumWebsites = 0;
+GO
+
+CREATE PROCEDURE WebsiteData.spTags_SelectWebsite
+	@WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT Tag.TagID, Tag.[Text]
+	FROM WebsiteData.Tag AS Tag
+	INNER JOIN WebsiteData.TagWebsite AS TagWebsite ON TagWebsite.TagID = Tag.TagID
+	WHERE TagWebsite.WebsiteID = @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spWebsite_Insert
@@ -148,4 +170,15 @@ AS
 	FROM WebsiteData.Website AS Website
 	INNER JOIN WebsiteData.[User] AS [User] ON [User].UserID = Website.[Owner]
 	WHERE Website.Visibility = 1;
+GO
+
+CREATE PROCEDURE WebsiteData.spPage_Select
+	@WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT [Page].PageID, [Page].Title
+	FROM WebsiteData.[Page]
+	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
+	WHERE WebsitePage.WebsiteID = @WebsiteID;
 GO

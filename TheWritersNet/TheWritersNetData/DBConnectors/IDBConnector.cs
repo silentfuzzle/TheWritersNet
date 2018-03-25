@@ -20,7 +20,15 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Permissions
+
         void InsertPermission(PermissionModel permission);
+
+        List<PermissionModel> SelectWebsitePermissions(int websiteID);
+
+        #endregion
+
+        List<TagModel> SelectWebsiteTags(int websiteID);
 
         #region Websites
 
@@ -33,5 +41,7 @@ namespace TheWritersNetData.DBConnectors
         List<PublicWebsiteModel> SelectPublicWebsites();
 
         #endregion
+
+        List<PageModel> SelectWebsitePages(int websiteID);
     }
 }
