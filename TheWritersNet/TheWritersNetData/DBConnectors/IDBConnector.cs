@@ -34,6 +34,8 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertWebsite(NewWebsiteModel website);
 
+        void UpdateWebsite(UserWebsiteModel website);
+
         void DeleteWebsite(int websiteID);
 
         List<UserWebsiteModel> SelectUserWebsites(string loginID);

@@ -58,7 +58,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserID, @Ability", permissions);
+                connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserID, @AbilityID", permissions);
             }
         }
 
@@ -76,7 +76,7 @@ namespace TheWritersNetData.DBConnectors
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<TagModel>("WebsiteData.spTags_SelectWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                return connection.Query<TagModel>("WebsiteData.spTags_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
             }
         }
 
@@ -89,6 +89,16 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 connection.Execute("WebsiteData.spWebsite_Insert @Title, @LoginID, @Visibility, @Description", websites);
+            }
+        }
+
+        public void UpdateWebsite(UserWebsiteModel website)
+        {
+            List<UserWebsiteModel> websites = new List<UserWebsiteModel>() { website };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spWebsite_Update @WebsiteID, @Title, @VisibilityID, @Description", websites);
             }
         }
 

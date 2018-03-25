@@ -36,6 +36,8 @@ namespace TheWritersNet.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            ViewBag.VisibilityOptions = DropDownGenerator.GetVisibilityDropDown(0);
+
             return View();
         }
 
@@ -53,11 +55,38 @@ namespace TheWritersNet.Controllers
         [Authorize]
         public ActionResult Edit(UserWebsiteModel website)
         {
+            ViewBag.VisibilityOptions = DropDownGenerator.GetVisibilityDropDown(website.VisibilityID - 1);
+
+            return View(PopulateWebsiteModel(website));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Edit(WebsiteModel website)
+        {
+            UserWebsiteModel updateWebsite = new UserWebsiteModel()
+            {
+                WebsiteID = website.WebsiteID,
+                Title = website.Title,
+                VisibilityID = website.VisibilityID,
+                Description = website.Description
+            };
+
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            db.UpdateWebsite(updateWebsite);
+
+            ViewBag.VisibilityOptions = DropDownGenerator.GetVisibilityDropDown(website.VisibilityID - 1);
+
+            return View(PopulateWebsiteModel(updateWebsite));
+        }
+
+        private WebsiteModel PopulateWebsiteModel(UserWebsiteModel website)
+        {
             WebsiteModel details = new WebsiteModel()
             {
                 WebsiteID = website.WebsiteID,
                 Title = website.Title,
-                Visibility = website.VisibilityID,
+                VisibilityID = website.VisibilityID,
                 Description = website.Description
             };
 
@@ -66,7 +95,7 @@ namespace TheWritersNet.Controllers
             details.Pages = db.SelectWebsitePages(website.WebsiteID);
             details.Permissions = db.SelectWebsitePermissions(website.WebsiteID);
 
-            return View(details);
+            return details;
         }
 
         [Authorize]

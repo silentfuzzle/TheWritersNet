@@ -35,12 +35,12 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Insert
-	@WebsiteID int, @UserID int, @Ability int
+	@WebsiteID int, @UserID int, @AbilityID int
 AS
 	SET NOCOUNT ON;
 
 	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, Ability)
-	VALUES(@WebsiteID, @UserID, @Ability)
+	VALUES(@WebsiteID, @UserID, @AbilityID)
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Select
@@ -48,9 +48,10 @@ CREATE PROCEDURE WebsiteData.spPermission_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [User].UserID, [User].UserName, WebsitePermission.Ability
+	SELECT [User].UserID, [User].UserName, WebsitePermission.Ability AS AbilityID, Ability.[Name] AS Ability
 	FROM WebsiteData.[User]
 	INNER JOIN WebsiteData.WebsitePermission ON [User].UserID = WebsitePermission.UserID
+	INNER JOIN WebsiteData.Ability ON Ability.AbilityID = WebsitePermission.Ability
 	WHERE WebsitePermission.WebsiteID = @WebsiteID;
 GO
 
@@ -63,7 +64,7 @@ AS
 	WHERE Tag.NumUsers = 0 AND Tag.NumWebsites = 0;
 GO
 
-CREATE PROCEDURE WebsiteData.spTags_SelectWebsite
+CREATE PROCEDURE WebsiteData.spTags_SelectForWebsite
 	@WebsiteID int
 AS
 	SET NOCOUNT ON;
@@ -88,6 +89,16 @@ AS
 	SET @WebsiteID = SCOPE_IDENTITY();
 
 	EXEC WebsiteData.spPermission_Insert @WebsiteID, @UserID, 1;
+GO
+
+CREATE PROCEDURE WebsiteData.spWebsite_Update
+	@WebsiteID int, @Title nvarchar(100), @VisibilityID int, @Description nvarchar(1000)
+AS
+	SET NOCOUNT ON;
+
+	UPDATE WebsiteData.Website
+	SET Website.Title = @Title, Website.Visibility = @VisibilityID, Website.[Description] = @Description
+	WHERE Website.WebsiteID = @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spWebsite_Delete
@@ -177,8 +188,9 @@ CREATE PROCEDURE WebsiteData.spPage_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [Page].PageID, [Page].Title
+	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePage = [Page].PageID THEN 1 ELSE 0 END AS HomePage
 	FROM WebsiteData.[Page]
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
-	WHERE WebsitePage.WebsiteID = @WebsiteID;
+	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
+	WHERE WebsitePage.WebsiteID = 1;
 GO

@@ -20,6 +20,9 @@
                 <div class="dropdown-item">
                     @Html.ActionLink("Edit Profile", "Edit", "Profile", routeValues: null, htmlAttributes: new { title = "Manage" })
                 </div>
+                <div class="dropdown-item">
+                    @Html.ActionLink("My Websites", "MyWebsites", "Website", routeValues: null, htmlAttributes: new { title = "Manage" })
+                </div>
             </div>
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>

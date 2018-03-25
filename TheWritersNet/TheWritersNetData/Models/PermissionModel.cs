@@ -11,6 +11,7 @@ namespace TheWritersNetData.Models
         public int UserID { get; set; }
         public string UserName { get; set; }
         public int WebsiteID { get; set; }
-        public int Ability { get; set; }
+        public int AbilityID { get; set; }
+        public string Ability { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace TheWritersNet.Models
     {
         public int WebsiteID { get; set; }
         public string Title { get; set; }
-        public int Visibility { get; set; }
+        public int VisibilityID { get; set; }
         public string Description { get; set; }
         public List<TagModel> Tags { get; set; }
         public List<PageModel> Pages { get; set; }
