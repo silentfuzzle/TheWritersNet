@@ -58,7 +58,7 @@ namespace TheWritersNet.Controllers
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             UserWebsiteModel website = db.SelectWebsite(websiteID);
 
-            return RedirectToAction("Edit", PopulateWebsiteModel(website));
+            return RedirectToAction("Edit", website);
         }
 
         [Authorize]

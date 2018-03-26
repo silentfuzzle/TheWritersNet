@@ -212,11 +212,23 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public DBPageModel SelectPage(int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<DBPageModel> pages = connection.Query<DBPageModel>("WebsiteData.spPage_Select @PageID", new { PageID = pageID }).ToList();
+                if (pages.Count() > 0)
+                    return pages.First();
+            }
+
+            return null;
+        }
+
         public List<DBPageModel> SelectWebsitePages(int websiteID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                List<DBPageModel> pages = connection.Query<DBPageModel>("WebsiteData.spPage_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                List<DBPageModel> pages = connection.Query<DBPageModel>("WebsiteData.spPage_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
                 foreach (DBPageModel page in pages)
                     page.WebsiteID = websiteID;
                 return pages;
@@ -225,12 +237,74 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Sections
+
+        public void InsertSection(SectionModel section)
+        {
+            List<SectionModel> sections = new List<SectionModel>() { section };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSection_Insert @PageID, @Title, @Position, @Text", sections);
+            }
+        }
+
+        public void UpdateSection(SectionModel section)
+        {
+            List<SectionModel> sections = new List<SectionModel>() { section };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSection_Update @SectionID, @Title, @Text", sections);
+            }
+        }
+
+        public void UpdateSectionPosition(SectionModel section)
+        {
+            List<SectionModel> sections = new List<SectionModel>() { section };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSection_UpdatePosition @SectionID, @PageID, @Position", sections);
+            }
+        }
+
+        public void DeleteSection(int sectionID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSection_Delete @SectionID", new { SectionID = sectionID });
+            }
+        }
+
+        public void DeleteSectionFromPage(int sectionID, int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSection_DeleteFromPage @SectionID, @PageID", new { SectionID = sectionID, PageID = pageID });
+            }
+        }
+
+        public SectionModel SelectSection(int sectionID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<SectionModel> sections = connection.Query<SectionModel>("WebsiteData.spSection_Select @SectionID", new { SectionID = sectionID }).ToList();
+                if (sections.Count() > 0)
+                    return sections.First();
+            }
+
+            return null;
+        }
+
         public List<SectionModel> SelectPageSections(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<SectionModel>("WebsiteData.spSection_Select @PageID", new { PageID = pageID }).ToList();
+                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPage @PageID", new { PageID = pageID }).ToList();
             }
         }
+
+        #endregion
     }
 }

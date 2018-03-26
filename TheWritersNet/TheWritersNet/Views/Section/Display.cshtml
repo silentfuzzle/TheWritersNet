@@ -1,0 +1,20 @@
+﻿@model TheWritersNetData.Models.SectionModel
+
+@{
+    ViewBag.Title = "Display";
+}
+
+<h2>Display</h2>
+
+<div>
+    <h4>
+        @Html.DisplayFor(model => model.Title)
+    </h4>
+    <p>
+        @Html.DisplayFor(model => model.Text)
+    </p>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { pageID = Model.PageID, sectionID = Model.SectionID }) |
+    @Html.ActionLink("Back to Page", "EditFromID", "Page", new { pageID = Model.PageID }, new { })
+</p>

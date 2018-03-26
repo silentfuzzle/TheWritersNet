@@ -8,8 +8,10 @@ namespace TheWritersNetData.Models
 {
     public class SectionModel
     {
+        public int PageID { get; set; }
         public int SectionID { get; set; }
         public string Title { get; set; }
+        public string Text { get; set; }
         public string Position { get; set; }
     }
 }

@@ -66,10 +66,28 @@ namespace TheWritersNetData.DBConnectors
 
         void DeletePage(int pageID);
 
+        DBPageModel SelectPage(int pageID);
+
         List<DBPageModel> SelectWebsitePages(int websiteID);
 
         #endregion
 
+        #region Sections
+
+        void InsertSection(SectionModel section);
+
+        void UpdateSection(SectionModel section);
+
+        void UpdateSectionPosition(SectionModel section);
+
+        void DeleteSection(int sectionID);
+
+        void DeleteSectionFromPage(int sectionID, int pageID);
+
+        SectionModel SelectSection(int sectionID);
+
         List<SectionModel> SelectPageSections(int pageID);
+
+        #endregion
     }
 }

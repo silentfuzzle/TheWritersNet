@@ -41,7 +41,7 @@
 
 <h4>Sections</h4>
 <p>
-    @Html.ActionLink("Create New", "Create", "Section")
+    @Html.ActionLink("Create New", "Create", "Section", new { pageID = Model.PageID }, new { })
 </p>
 <table class="table">
     <tr>
@@ -64,8 +64,9 @@
                 @Html.DisplayFor(modelItem => item.Position)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", "Section") |
-                @Html.ActionLink("Delete", "Delete", "Delete")
+                @Html.ActionLink("Edit", "Edit", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
+                @Html.ActionLink("View", "Display", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
+                @Html.ActionLink("Delete", "Delete", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { })
             </td>
         </tr>
     }

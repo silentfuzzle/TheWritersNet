@@ -34,6 +34,15 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
+        public ActionResult EditFromID(int pageID)
+        {
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            DBPageModel page = db.SelectPage(pageID);
+
+            return RedirectToAction("Edit", page);
+        }
+
+        [Authorize]
         public ActionResult Edit(DBPageModel webpage)
         {
             return View(PopulatePageModel(webpage));

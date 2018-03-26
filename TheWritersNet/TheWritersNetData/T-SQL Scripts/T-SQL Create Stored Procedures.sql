@@ -334,18 +334,17 @@ AS
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	WHERE PageSection.PageID = @PageID;
-
-	DELETE Section
-	FROM WebsiteData.Section
-	LEFT JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
-	WHERE PageSection.SectionID IS NULL;
 	
 	DELETE WebsitePage
 	FROM WebsiteData.WebsitePage
 	WHERE WebsitePage.PageID = @PageID;
+
+	DELETE [Page]
+	FROM WebsiteData.[Page]
+	WHERE [Page].PageID = @PageID;
 GO
 
-CREATE PROCEDURE WebsiteData.spPage_Select
+CREATE PROCEDURE WebsiteData.spPage_SelectForWebsite
 	@WebsiteID int
 AS
 	SET NOCOUNT ON;
@@ -357,7 +356,78 @@ AS
 	WHERE WebsitePage.WebsiteID = 1;
 GO
 
-CREATE PROCEDURE WebsiteData.spSection_Select
+CREATE PROCEDURE WebsiteData.spPage_Select
+	@PageID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePage = [Page].PageID THEN 1 ELSE 0 END AS HomePage, WebsitePage.WebsiteID
+	FROM WebsiteData.[Page]
+	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
+	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
+	WHERE [Page].PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_Insert
+	@PageID int, @Title nvarchar(100), @Position nvarchar(500), @Text nvarchar(max)
+AS
+	SET NOCOUNT ON;
+	
+	DECLARE @SectionID int;
+	
+	INSERT INTO WebsiteData.Section (Title, [Text])
+	VALUES(@Title, @Text)
+	SET @SectionID = SCOPE_IDENTITY();
+
+	INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position)
+	VALUES (@PageID, @SectionID, @Position);
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_Update
+	@SectionID int, @Title nvarchar(100), @Text nvarchar(max)
+AS
+	SET NOCOUNT ON;
+	
+	UPDATE WebsiteData.Section
+	SET Section.Title = @Title, Section.[Text] = @Text
+	WHERE Section.SectionID = @SectionID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_UpdatePosition
+	@SectionID int, @PageID int, @Position nvarchar(500)
+AS
+	SET NOCOUNT ON;
+	
+	UPDATE WebsiteData.PageSection
+	SET PageSection.Position = @Position
+	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_Delete
+	@SectionID int
+AS
+	SET NOCOUNT ON;
+	
+	DELETE PageSection
+	FROM WebsiteData.PageSection
+	WHERE PageSection.SectionID = @SectionID;
+
+	DELETE Section
+	FROM WebsiteData.Section
+	WHERE Section.SectionID = @SectionID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_DeleteFromPage
+	@SectionID int, @PageID int
+AS
+	SET NOCOUNT ON;
+
+	DELETE PageSection
+	FROM WebsiteData.PageSection
+	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_SelectForPage
 	@PageID int
 AS
 	SET NOCOUNT ON;
@@ -367,4 +437,15 @@ AS
 	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
 	WHERE PageSection.PageID = @PageID
 	ORDER BY PageSection.Position;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_Select
+	@SectionID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT Section.SectionID, Section.Title, Section.[Text], PageSection.Position
+	FROM WebsiteData.Section
+	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
+	WHERE Section.SectionID = @SectionID;
 GO
