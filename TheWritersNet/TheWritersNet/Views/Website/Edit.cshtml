@@ -45,10 +45,10 @@
             </div>
         </div>
     </div>
-    
+
     <h4>Tags</h4>
     <p>
-        @Html.ActionLink("Create New", "Create", "Tag")
+        @Html.ActionLink("Create New", "Create", "Tag", new { websiteID = Model.WebsiteID, userID = -1 }, new { })
     </p>
     <table class="table">
         <tr>
@@ -65,8 +65,8 @@
                     @Html.DisplayFor(modelItem => item.Text)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", item) |
-                    @Html.ActionLink("Delete", "Delete", item)
+                    @Html.ActionLink("Edit", "Edit", "Tag", new { tagID = item.TagID, websiteID = Model.WebsiteID, userID = -1, text = item.Text }, new { }) |
+                    @Html.ActionLink("Delete", "Delete", "Tag", new { tagID = item.TagID, websiteID = Model.WebsiteID, userID = -1, text = item.Text }, new { })
                 </td>
             </tr>
         }

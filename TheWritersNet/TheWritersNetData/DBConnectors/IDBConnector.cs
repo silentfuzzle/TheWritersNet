@@ -28,7 +28,17 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Tags
+
+        void InsertWebsiteTag(TagModel tag);
+
+        void UpdateWebsiteTag(TagModel tag);
+
+        void DeleteWebsiteTag(TagModel tag);
+
         List<TagModel> SelectWebsiteTags(int websiteID);
+
+        #endregion
 
         #region Websites
 
@@ -37,6 +47,8 @@ namespace TheWritersNetData.DBConnectors
         void UpdateWebsite(UserWebsiteModel website);
 
         void DeleteWebsite(int websiteID);
+
+        UserWebsiteModel SelectWebsite(int websiteID);
 
         List<UserWebsiteModel> SelectUserWebsites(string loginID);
 

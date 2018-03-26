@@ -22,7 +22,7 @@ namespace TheWritersNet.Models
                 Value = "2"
             });
 
-            if (selected < listItems.Count)
+            if (selected < listItems.Count && selected >= 0)
                 listItems[selected].Selected = true;
             else
                 listItems[0].Selected = true;

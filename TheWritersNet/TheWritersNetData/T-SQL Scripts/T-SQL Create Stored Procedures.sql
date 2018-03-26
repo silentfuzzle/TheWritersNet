@@ -55,6 +55,82 @@ AS
 	WHERE WebsitePermission.WebsiteID = @WebsiteID;
 GO
 
+CREATE PROCEDURE WebsiteData.spTag_InsertForWebsite
+	@WebsiteID int, @Text nvarchar(100)
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @TagID int, @UserID int;
+
+	IF NOT EXISTS (SELECT TagID FROM WebsiteData.Tag WHERE Tag.[Text] = @Text)
+		BEGIN
+			INSERT INTO WebsiteData.Tag ([Text], NumUsers, NumWebsites)
+			VALUES(@Text, 0, 1)
+			SET @TagID = SCOPE_IDENTITY()
+
+			INSERT INTO WebsiteData.TagWebsite (TagID, WebsiteID)
+			VALUES (@TagID, @WebsiteID)
+		END
+	ELSE 
+		BEGIN
+			SET @TagID = (SELECT TOP 1 TagID FROM WebsiteData.Tag WHERE [Text] LIKE @Text)
+
+			IF NOT EXISTS (SELECT WebsiteID FROM WebsiteData.TagWebsite WHERE TagID = @TagID AND WebsiteID = @WebsiteID)
+				BEGIN
+					INSERT INTO WebsiteData.TagWebsite (TagID, WebsiteID)
+					VALUES (@TagID, @WebsiteID)
+					
+					UPDATE Tag
+					SET Tag.NumWebsites = Tag.NumWebsites + 1
+					FROM WebsiteData.Tag
+					INNER JOIN WebsiteData.TagWebsite ON TagWebsite.TagID = Tag.TagID
+					WHERE TagWebsite.WebsiteID = @WebsiteID AND TagWebsite.TagID = @TagID;
+				END
+		END
+GO
+
+CREATE PROCEDURE WebsiteData.spTag_DeleteForWebsite
+	@TagID int, @WebsiteID int
+AS
+	SET NOCOUNT ON;
+	
+	UPDATE WebsiteData.Tag
+	SET Tag.NumWebsites = Tag.NumWebsites - 1
+	WHERE Tag.TagID = @TagID;
+
+	DELETE TagWebsite
+	FROM WebsiteData.TagWebsite
+	WHERE TagWebsite.WebsiteID = @WebsiteID AND TagWebsite.TagID = @TagID;
+
+	IF (SELECT (NumUsers + NumWebsites) AS NumUsing FROM WebsiteData.Tag WHERE Tag.TagID = @TagID) = 0
+		BEGIN
+			DELETE Tag
+			FROM WebsiteData.Tag
+			WHERE Tag.TagID = @TagID;
+		END
+GO
+
+CREATE PROCEDURE WebsiteData.spTag_UpdateForWebsite
+	@TagID int, @WebsiteID int, @Text nvarchar(100)
+AS
+	SET NOCOUNT ON;
+
+	IF @Text != (SELECT [Text] FROM WebsiteData.Tag WHERE Tag.TagID = @TagID)
+		BEGIN
+			IF (SELECT (NumUsers + NumWebsites) AS NumUsing FROM WebsiteData.Tag WHERE Tag.TagID = @TagID) = 1
+				BEGIN
+					UPDATE WebsiteData.Tag
+					SET Tag.Text = @Text
+					WHERE Tag.TagID = @TagID;
+				END
+			ELSE
+				BEGIN
+					EXEC WebsiteData.spTag_DeleteForWebsite @TagID, @WebsiteID;
+					EXEC WebsiteData.spTag_InsertForWebsite @WebsiteID, @Text;
+				END
+		END
+GO
+
 CREATE PROCEDURE WebsiteData.spTag_DeleteEmpty
 AS
 	SET NOCOUNT ON;
@@ -64,7 +140,7 @@ AS
 	WHERE Tag.NumUsers = 0 AND Tag.NumWebsites = 0;
 GO
 
-CREATE PROCEDURE WebsiteData.spTags_SelectForWebsite
+CREATE PROCEDURE WebsiteData.spTag_SelectForWebsite
 	@WebsiteID int
 AS
 	SET NOCOUNT ON;
@@ -129,10 +205,8 @@ AS
 	UPDATE Tag
 	SET Tag.NumWebsites = Tag.NumWebsites - 1
 	FROM WebsiteData.Tag AS Tag
-	JOIN
-	(
-		SELECT TagID FROM WebsiteData.TagWebsite WHERE TagWebsite.WebsiteID = @WebsiteID
-	) WebsiteTag ON WebsiteTag.TagID = Tag.TagID;
+	INNER JOIN WebsiteData.TagWebsite ON TagWebsite.TagID = Tag.TagID
+	WHERE TagWebsite.WebsiteID = @WebsiteID;
 
 	EXEC WebsiteData.spTag_DeleteEmpty;
 
@@ -147,6 +221,16 @@ AS
 	DELETE Website
 	FROM WebsiteData.Website AS Website
 	WHERE Website.WebsiteID = @WebsiteID;
+GO
+
+CREATE PROCEDURE WebsiteData.spWebsite_Select
+	@WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT Website.WebsiteID, Website.Title, Website.Visibility AS VisibilityID, Website.[Description]
+	FROM WebsiteData.Website
+	WHERE Website.[WebsiteID] = @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spWebsite_SelectForUser

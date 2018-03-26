@@ -72,13 +72,47 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Tags
+
+        public void InsertWebsiteTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_InsertForWebsite @WebsiteID, @Text", tags);
+            }
+        }
+
+        public void UpdateWebsiteTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_UpdateForWebsite @TagID, @WebsiteID, @Text", tags);
+            }
+        }
+
+        public void DeleteWebsiteTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_DeleteForWebsite @TagID, @WebsiteID", tags);
+            }
+        }
+
         public List<TagModel> SelectWebsiteTags(int websiteID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<TagModel>("WebsiteData.spTags_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                return connection.Query<TagModel>("WebsiteData.spTag_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
             }
         }
+
+        #endregion
 
         #region Websites
 
@@ -108,6 +142,18 @@ namespace TheWritersNetData.DBConnectors
             {
                 connection.Execute("WebsiteData.spWebsite_Delete @WebsiteID", new { WebsiteID = websiteID });
             }
+        }
+
+        public UserWebsiteModel SelectWebsite(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<UserWebsiteModel> websites = connection.Query<UserWebsiteModel>("WebsiteData.spWebsite_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                if (websites.Count() > 0)
+                    return websites.First();
+            }
+
+            return null;
         }
 
         public List<UserWebsiteModel> SelectUserWebsites(string loginID)

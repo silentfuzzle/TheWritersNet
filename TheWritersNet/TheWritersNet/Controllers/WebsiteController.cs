@@ -53,6 +53,15 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
+        public ActionResult EditFromID(int websiteID)
+        {
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            UserWebsiteModel website = db.SelectWebsite(websiteID);
+
+            return RedirectToAction("Edit", PopulateWebsiteModel(website));
+        }
+
+        [Authorize]
         public ActionResult Edit(UserWebsiteModel website)
         {
             ViewBag.VisibilityOptions = DropDownGenerator.GetVisibilityDropDown(website.VisibilityID - 1);

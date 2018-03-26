@@ -1,0 +1,48 @@
+﻿@model TheWritersNetData.Models.TagModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>TagModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Text)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.TagID)
+        @Html.HiddenFor(model => model.UserID)
+        @Html.HiddenFor(model => model.WebsiteID)
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+    }
+
+    @if (Model.UserID == -1)
+    {
+        <div>
+            @Html.ActionLink("Back to Website", "EditFromID", "Website", new { websiteID = Model.WebsiteID }, new { })
+        </div>
+    }
+    else
+    {
+        <div>
+            @Html.ActionLink("Back to Profile", "Edit", "Profile")
+        </div>
+    }
+</div>
