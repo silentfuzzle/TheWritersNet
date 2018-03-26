@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
+using TheWritersNetData.Models;
 
-namespace TheWritersNetData.Models
+namespace TheWritersNet.Models
 {
     public class PageModel
     {
         public int PageID { get; set; }
+        public int WebsiteID { get; set; }
         public string Title { get; set; }
         public bool HomePage { get; set; }
+        public List<SectionModel> Sections { get; set; }
     }
 }

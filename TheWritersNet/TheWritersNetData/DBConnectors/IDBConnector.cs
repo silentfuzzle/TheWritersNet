@@ -44,6 +44,8 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertWebsite(NewWebsiteModel website);
 
+        void UpdateWebsiteHomePage(int websiteID, int pageID, bool homePage);
+
         void UpdateWebsite(UserWebsiteModel website);
 
         void DeleteWebsite(int websiteID);
@@ -56,6 +58,18 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
-        List<PageModel> SelectWebsitePages(int websiteID);
+        #region Pages
+
+        void InsertPage(DBPageModel page);
+
+        void UpdatePage(DBPageModel page);
+
+        void DeletePage(int pageID);
+
+        List<DBPageModel> SelectWebsitePages(int websiteID);
+
+        #endregion
+
+        List<SectionModel> SelectPageSections(int pageID);
     }
 }

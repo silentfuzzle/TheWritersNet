@@ -76,7 +76,7 @@
     <h4>Pages</h4>
 
     <p>
-        @Html.ActionLink("Create New", "Create", "Page")
+        @Html.ActionLink("Create New", "Create", "Page", new { websiteID = Model.WebsiteID }, new { })
     </p>
     <table class="table">
         <tr>
@@ -99,9 +99,9 @@
                     @Html.DisplayFor(modelItem => item.HomePage)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", item) |
+                    @Html.ActionLink("Edit", "Edit", "Page", item, new { }) |
                     @Html.ActionLink("View", "Display", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", item)
+                    @Html.ActionLink("Delete", "Delete", "Page", item, new { })
                 </td>
             </tr>
         }

@@ -46,8 +46,9 @@
     <Compile Include="DBConnectors\DBConnectorFactory.cs" />
     <Compile Include="DBConnectors\IDBConnector.cs" />
     <Compile Include="DBConnectors\SQLServerDapperConnector.cs" />
-    <Compile Include="Models\PageModel.cs" />
+    <Compile Include="Models\DBPageModel.cs" />
     <Compile Include="Models\PermissionModel.cs" />
+    <Compile Include="Models\SectionModel.cs" />
     <Compile Include="Models\TagModel.cs" />
     <Compile Include="Models\Websites\PublicWebsiteModel.cs" />
     <Compile Include="Models\UserModel.cs" />

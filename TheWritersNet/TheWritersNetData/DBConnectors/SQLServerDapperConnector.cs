@@ -136,6 +136,14 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public void UpdateWebsiteHomePage(int websiteID, int pageID, bool homePage)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spWebsite_UpdateHomePage @WebsiteID, @PageID, @HomePage", new { WebsiteID = websiteID, PageID = pageID, HomePage = homePage });
+            }
+        }
+
         public void DeleteWebsite(int websiteID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -174,11 +182,54 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
-        public List<PageModel> SelectWebsitePages(int websiteID)
+        #region Pages
+
+        public void InsertPage(DBPageModel page)
+        {
+            List<DBPageModel> pages = new List<DBPageModel>() { page };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPage_Insert @WebsiteID, @Title, @HomePage", pages);
+            }
+        }
+
+        public void UpdatePage(DBPageModel page)
+        {
+            List<DBPageModel> pages = new List<DBPageModel>() { page };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPage_Update @PageID, @Title", pages);
+            }
+        }
+
+        public void DeletePage(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<PageModel>("WebsiteData.spPage_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                connection.Execute("WebsiteData.spPage_Delete @PageID", new { PageID = pageID });
+            }
+        }
+
+        public List<DBPageModel> SelectWebsitePages(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                List<DBPageModel> pages = connection.Query<DBPageModel>("WebsiteData.spPage_Select @WebsiteID", new { WebsiteID = websiteID }).ToList();
+                foreach (DBPageModel page in pages)
+                    page.WebsiteID = websiteID;
+                return pages;
+            }
+        }
+
+        #endregion
+
+        public List<SectionModel> SelectPageSections(int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SectionModel>("WebsiteData.spSection_Select @PageID", new { PageID = pageID }).ToList();
             }
         }
     }

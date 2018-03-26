@@ -13,7 +13,7 @@ namespace TheWritersNet.Models
         public int VisibilityID { get; set; }
         public string Description { get; set; }
         public List<TagModel> Tags { get; set; }
-        public List<PageModel> Pages { get; set; }
+        public List<DBPageModel> Pages { get; set; }
         public List<PermissionModel> Permissions { get; set; }
     }
 }
