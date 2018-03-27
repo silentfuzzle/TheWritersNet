@@ -20,9 +20,32 @@ namespace TheWritersNet.Controllers
         public ActionResult SelectSections(int pageID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            List<SectionModel> sections = db.SelectWebsiteSections(pageID);
+            List<SectionModel> sections = db.SelectPagePositions(pageID);
+            sections[0].PageID = pageID;
 
             return View(sections);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult SelectSections(List<SectionModel> sections)
+        {
+            List<SectionModel> removePositions = new List<SectionModel>();
+            List<SectionModel> addPositions = new List<SectionModel>();
+            foreach (SectionModel section in sections)
+            {
+                section.PageID = sections[0].PageID;
+                if (section.IsSelected)
+                    addPositions.Add(section);
+                else
+                    removePositions.Add(section);
+            }
+
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            db.InsertPositions(addPositions);
+            db.DeletePositions(removePositions);
+
+            return RedirectToAction("EditFromID", "Page", new { pageID = sections[0].PageID });
         }
 
         [Authorize]
@@ -67,7 +90,7 @@ namespace TheWritersNet.Controllers
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.UpdateSection(page);
-            db.UpdateSectionPosition(page);
+            db.UpdatePosition(page);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
         }

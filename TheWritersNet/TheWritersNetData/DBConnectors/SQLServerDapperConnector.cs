@@ -237,6 +237,44 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Section Positions
+
+        public void InsertPositions(List<SectionModel> sections)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPosition_Insert @PageID, @SectionID, @Position", sections);
+            }
+        }
+
+        public void UpdatePosition(SectionModel section)
+        {
+            List<SectionModel> sections = new List<SectionModel>() { section };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPosition_Update @SectionID, @PageID, @Position", sections);
+            }
+        }
+
+        public void DeletePositions(List<SectionModel> sections)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPosition_Delete @PageID, @SectionID", sections);
+            }
+        }
+
+        public List<SectionModel> SelectPagePositions(int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SectionModel>("WebsiteData.spPosition_SelectForPage @PageID", new { PageID = pageID }).ToList();
+            }
+        }
+
+        #endregion
+
         #region Sections
 
         public void InsertSection(SectionModel section)
@@ -256,16 +294,6 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 connection.Execute("WebsiteData.spSection_Update @SectionID, @Title, @Text", sections);
-            }
-        }
-
-        public void UpdateSectionPosition(SectionModel section)
-        {
-            List<SectionModel> sections = new List<SectionModel>() { section };
-
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
-            {
-                connection.Execute("WebsiteData.spSection_UpdatePosition @SectionID, @PageID, @Position", sections);
             }
         }
 
@@ -302,14 +330,6 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPage @PageID", new { PageID = pageID }).ToList();
-            }
-        }
-
-        public List<SectionModel> SelectWebsiteSections(int pageID)
-        {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
-            {
-                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForWebsite @PageID", new { PageID = pageID }).ToList();
             }
         }
 

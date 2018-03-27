@@ -1,0 +1,10 @@
+﻿@model TheWritersNetData.Models.SectionModel
+
+<div>
+    @Html.HiddenFor(x => x.SectionID)
+    @Html.HiddenFor(x => x.PageID)
+    @Html.LabelFor(x => x.IsSelected, Model.Title)
+    @Html.CheckBoxFor(x => x.IsSelected)
+    @Html.TextBoxFor(x => x.Position)
+</div>
+

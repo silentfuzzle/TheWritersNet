@@ -1,11 +1,13 @@
 DROP PROCEDURE WebsiteData.spSection_Select;
 DROP PROCEDURE WebsiteData.spSection_SelectForPage;
-DROP PROCEDURE WebsiteData.spSection_SelectForWebsite;
 DROP PROCEDURE WebsiteData.spSection_DeleteFromPage;
 DROP PROCEDURE WebsiteData.spSection_Delete;
-DROP PROCEDURE WebsiteData.spSection_UpdatePosition;
 DROP PROCEDURE WebsiteData.spSection_Update;
 DROP PROCEDURE WebsiteData.spSection_Insert;
+DROP PROCEDURE WebsiteData.spPosition_SelectForPage;
+DROP PROCEDURE WebsiteData.spPosition_Delete;
+DROP PROCEDURE WebsiteData.spPosition_Insert;
+DROP PROCEDURE WebsiteData.spPosition_Update;
 DROP PROCEDURE WebsiteData.spPage_Select;
 DROP PROCEDURE WebsiteData.spPage_SelectForWebsite;
 DROP PROCEDURE WebsiteData.spPage_Delete;

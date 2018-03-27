@@ -366,6 +366,58 @@ AS
 	WHERE [Page].PageID = @PageID;
 GO
 
+CREATE PROCEDURE WebsiteData.spPosition_Update
+	@SectionID int, @PageID int, @Position nvarchar(500)
+AS
+	SET NOCOUNT ON;
+	
+	UPDATE WebsiteData.PageSection
+	SET PageSection.Position = @Position
+	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spPosition_Insert
+	@PageID int, @SectionID int, @Position nvarchar(500)
+AS
+	SET NOCOUNT ON;
+
+	IF NOT EXISTS (SELECT PageSection.PageID FROM WebsiteData.PageSection WHERE PageID = @PageID AND SectionID = @SectionID)
+		BEGIN
+			INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position)
+			VALUES (@PageID, @SectionID, @Position);
+		END
+	ELSE
+		BEGIN
+			EXEC WebsiteData.spPosition_Update @SectionID, @PageID, @Position
+		END
+GO
+
+CREATE PROCEDURE WebsiteData.spPosition_Delete
+	@PageID int, @SectionID int
+AS
+	SET NOCOUNT ON;
+	
+	DELETE PageSection
+	FROM WebsiteData.PageSection
+	WHERE PageSection.PageID = @PageID AND PageSection.SectionID = @SectionID;
+GO
+
+CREATE PROCEDURE WebsiteData.spPosition_SelectForPage
+	@PageID int
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @WebsiteID int;
+
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+	
+	SELECT Section.SectionID, Section.Title, PageSection.Position, MAX(CASE WHEN PageSection.PageID = @PageID THEN 1 ELSE 0 END) AS IsSelected
+	FROM WebsiteData.Section
+	LEFT JOIN WebsiteData.PageSection ON Section.SectionID = PageSection.SectionID AND PageSection.PageID = @PageID
+	WHERE Section.WebsiteID = @WebsiteID
+	GROUP BY Section.SectionID, Section.Title, PageSection.Position;
+GO
+
 CREATE PROCEDURE WebsiteData.spSection_Insert
 	@PageID int, @Title nvarchar(100), @Position nvarchar(500), @Text nvarchar(max)
 AS
@@ -379,8 +431,7 @@ AS
 	VALUES(@WebsiteID, @Title, @Text)
 	SET @SectionID = SCOPE_IDENTITY();
 
-	INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position)
-	VALUES (@PageID, @SectionID, @Position);
+	EXEC WebsiteData.spPosition_Insert @PageID, @SectionID, @Position;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_Update
@@ -391,16 +442,6 @@ AS
 	UPDATE WebsiteData.Section
 	SET Section.Title = @Title, Section.[Text] = @Text
 	WHERE Section.SectionID = @SectionID;
-GO
-
-CREATE PROCEDURE WebsiteData.spSection_UpdatePosition
-	@SectionID int, @PageID int, @Position nvarchar(500)
-AS
-	SET NOCOUNT ON;
-	
-	UPDATE WebsiteData.PageSection
-	SET PageSection.Position = @Position
-	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_Delete
@@ -425,22 +466,6 @@ AS
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
-GO
-
-CREATE PROCEDURE WebsiteData.spSection_SelectForWebsite
-	@PageID int
-AS
-	SET NOCOUNT ON;
-
-	DECLARE @WebsiteID int;
-
-	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
-
-	SELECT Section.SectionID, Section.Title, MAX(CASE WHEN PageSection.PageID = @PageID THEN 1 ELSE 0 END) AS IsSelected
-	FROM WebsiteData.Section
-	LEFT JOIN WebsiteData.PageSection ON Section.SectionID = PageSection.SectionID
-	WHERE Section.WebsiteID = @WebsiteID
-	GROUP BY Section.SectionID, Section.Title;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_SelectForPage

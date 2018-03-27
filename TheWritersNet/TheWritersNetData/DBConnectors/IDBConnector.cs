@@ -71,14 +71,24 @@ namespace TheWritersNetData.DBConnectors
         List<DBPageModel> SelectWebsitePages(int websiteID);
 
         #endregion
+        
+        #region Section Positions
+
+        void InsertPositions(List<SectionModel> sections);
+
+        void UpdatePosition(SectionModel section);
+
+        void DeletePositions(List<SectionModel> sections);
+
+        List<SectionModel> SelectPagePositions(int pageID);
+
+        #endregion
 
         #region Sections
 
         void InsertSection(SectionModel section);
 
         void UpdateSection(SectionModel section);
-
-        void UpdateSectionPosition(SectionModel section);
 
         void DeleteSection(int sectionID);
 
@@ -87,8 +97,6 @@ namespace TheWritersNetData.DBConnectors
         SectionModel SelectSection(int sectionID);
 
         List<SectionModel> SelectPageSections(int pageID);
-
-        List<SectionModel> SelectWebsiteSections(int pageID);
 
         #endregion
     }

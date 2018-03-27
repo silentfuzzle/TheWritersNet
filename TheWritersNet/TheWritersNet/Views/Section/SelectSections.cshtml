@@ -1,0 +1,13 @@
+﻿@model List<TheWritersNetData.Models.SectionModel>
+
+@{
+    ViewBag.Title = "Select Sections";
+}
+
+<h2>Select Sections to Add or Remove</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.EditorForModel()
+    <button type="submit">OK</button>
+}

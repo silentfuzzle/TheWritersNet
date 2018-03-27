@@ -41,7 +41,8 @@
 
 <h4>Sections</h4>
 <p>
-    @Html.ActionLink("Create New", "Create", "Section", new { pageID = Model.PageID }, new { })
+    @Html.ActionLink("Create New", "Create", "Section", new { pageID = Model.PageID }, new { }) | 
+    @Html.ActionLink("Add Existing", "SelectSections", "Section", new { pageID = Model.PageID}, new { })
 </p>
 <table class="table">
     <tr>

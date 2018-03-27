@@ -322,6 +322,8 @@
     <Content Include="Views\Section\Edit.cshtml" />
     <Content Include="Views\Section\Delete.cshtml" />
     <Content Include="Views\Section\Display.cshtml" />
+    <Content Include="Views\Section\SelectSections.cshtml" />
+    <Content Include="Views\Section\EditorTemplates\SectionModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
