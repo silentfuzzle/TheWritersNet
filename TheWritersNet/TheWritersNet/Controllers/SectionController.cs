@@ -17,6 +17,15 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
+        public ActionResult SelectSections(int pageID)
+        {
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            List<SectionModel> sections = db.SelectWebsiteSections(pageID);
+
+            return View(sections);
+        }
+
+        [Authorize]
         public ActionResult Display(int pageID, int sectionID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();

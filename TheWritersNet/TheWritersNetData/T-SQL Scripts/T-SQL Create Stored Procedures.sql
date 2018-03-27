@@ -18,13 +18,13 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spUser_SelectID
-		@LoginID nvarchar(50),
-		@UserID int OUTPUT
-	AS
-		SET NOCOUNT ON;
+	@LoginID nvarchar(50),
+	@UserID int OUTPUT
+AS
+	SET NOCOUNT ON;
 		
-		SET @UserID = (SELECT TOP 1 UserID FROM WebsiteData.[User] WHERE @LoginID = LoginID)
-	GO
+	SET @UserID = (SELECT TOP 1 UserID FROM WebsiteData.[User] WHERE @LoginID = LoginID)
+GO
 
 CREATE PROCEDURE WebsiteData.spUser_Select
 	@LoginID nvarchar(50)
@@ -39,7 +39,7 @@ CREATE PROCEDURE WebsiteData.spPermission_Insert
 AS
 	SET NOCOUNT ON;
 
-	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, Ability)
+	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, AbilityID)
 	VALUES(@WebsiteID, @UserID, @AbilityID)
 GO
 
@@ -48,10 +48,10 @@ CREATE PROCEDURE WebsiteData.spPermission_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [User].UserID, [User].UserName, WebsitePermission.Ability AS AbilityID, Ability.[Name] AS Ability
+	SELECT [User].UserID, [User].UserName, WebsitePermission.AbilityID, Ability.[Name] AS Ability
 	FROM WebsiteData.[User]
 	INNER JOIN WebsiteData.WebsitePermission ON [User].UserID = WebsitePermission.UserID
-	INNER JOIN WebsiteData.Ability ON Ability.AbilityID = WebsitePermission.Ability
+	INNER JOIN WebsiteData.Ability ON Ability.AbilityID = WebsitePermission.AbilityID
 	WHERE WebsitePermission.WebsiteID = @WebsiteID;
 GO
 
@@ -152,7 +152,7 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spWebsite_Insert
-	@Title nvarchar(100), @LoginID nvarchar(50), @Visibility int, @Description nvarchar(1000)
+	@Title nvarchar(100), @LoginID nvarchar(50), @VisibilityID int, @Description nvarchar(1000)
 AS
 	SET NOCOUNT ON;
 
@@ -160,8 +160,8 @@ AS
 
 	EXEC WebsiteData.spUser_SelectID @LoginID, @UserID OUTPUT;
 
-	INSERT INTO WebsiteData.Website (Title, HomePage, [Owner], Visibility, [Description])
-	VALUES(@Title, NULL, @UserID, @Visibility, @Description)
+	INSERT INTO WebsiteData.Website (Title, HomePageID, OwnerID, VisibilityID, [Description])
+	VALUES(@Title, NULL, @UserID, @VisibilityID, @Description)
 	SET @WebsiteID = SCOPE_IDENTITY();
 
 	EXEC WebsiteData.spPermission_Insert @WebsiteID, @UserID, 1;
@@ -173,7 +173,7 @@ AS
 	SET NOCOUNT ON;
 
 	UPDATE WebsiteData.Website
-	SET Website.Title = @Title, Website.Visibility = @VisibilityID, Website.[Description] = @Description
+	SET Website.Title = @Title, Website.VisibilityID = @VisibilityID, Website.[Description] = @Description
 	WHERE Website.WebsiteID = @WebsiteID;
 GO
 
@@ -184,12 +184,12 @@ AS
 
 	DECLARE @HomePageID int;
 
-	SET @HomePageID = (SELECT TOP 1 Website.HomePage FROM WebsiteData.Website WHERE WebsiteID = @WebsiteID);
+	SET @HomePageID = (SELECT TOP 1 Website.HomePageID FROM WebsiteData.Website WHERE WebsiteID = @WebsiteID);
 
-	IF (@HomePageID != @PageID AND @HomePage = 1)
+	IF (@HomePageID IS NULL OR (@HomePageID != @PageID AND @HomePage = 1))
 		BEGIN
 			UPDATE WebsiteData.Website
-			SET Website.HomePage = @PageID
+			SET Website.HomePageID = @PageID
 			WHERE Website.WebsiteID = @WebsiteID;
 		END
 	ELSE
@@ -197,7 +197,7 @@ AS
 			IF (@HomePageID = @PageID AND @HomePage = 0)
 				BEGIN
 					UPDATE WebsiteData.Website
-					SET Website.HomePage = (SELECT TOP 1 WebsitePage.PageID FROM WebsiteData.WebsitePage WHERE WebsiteID = @WebsiteID AND PageID != @PageID)
+					SET Website.HomePageID = (SELECT TOP 1 WebsitePage.PageID FROM WebsiteData.WebsitePage WHERE WebsiteID = @WebsiteID AND PageID != @PageID)
 					WHERE Website.WebsiteID = @WebsiteID;
 				END
 		END
@@ -208,16 +208,14 @@ CREATE PROCEDURE WebsiteData.spWebsite_Delete
 AS
 	SET NOCOUNT ON;
 
-	DELETE Section
-	FROM WebsiteData.Section
-	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
-	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = PageSection.PageID
-	WHERE WebsitePage.WebsiteID = @WebsiteID;
-
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = PageSection.PageID
 	WHERE WebsitePage.WebsiteID = @WebsiteID;
+
+	DELETE Section
+	FROM WebsiteData.Section
+	WHERE Section.WebsiteID = @WebsiteID;
 
 	DELETE [Page]
 	FROM WebsiteData.[Page]
@@ -254,7 +252,7 @@ CREATE PROCEDURE WebsiteData.spWebsite_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT Website.WebsiteID, Website.Title, Website.Visibility AS VisibilityID, Website.[Description]
+	SELECT Website.WebsiteID, Website.Title, Website.VisibilityID, Website.[Description]
 	FROM WebsiteData.Website
 	WHERE Website.[WebsiteID] = @WebsiteID;
 GO
@@ -271,15 +269,15 @@ AS
 	SELECT 
 		Website.WebsiteID, 
 		Website.Title, 
-		Website.Visibility AS VisibilityID, 
+		Website.VisibilityID, 
 		Visibility.[Name] AS Visibility, 
 		Website.[Description], 
-		Permission.Ability AS AbilityID, 
+		Permission.AbilityID, 
 		Ability.[Name] AS Ability
 	FROM WebsiteData.Website AS Website
 	INNER JOIN WebsiteData.WebsitePermission AS Permission ON Website.WebsiteID = Permission.WebsiteID
-	INNER JOIN WebsiteData.Ability AS Ability ON Permission.Ability = Ability.AbilityID
-	INNER JOIN WebsiteData.Visibility AS Visibility ON Website.Visibility = Visibility.VisibilityID
+	INNER JOIN WebsiteData.Ability AS Ability ON Permission.AbilityID = Ability.AbilityID
+	INNER JOIN WebsiteData.Visibility AS Visibility ON Website.VisibilityID = Visibility.VisibilityID
 	WHERE Permission.UserID = @UserID;
 GO
 
@@ -287,10 +285,10 @@ CREATE PROCEDURE WebsiteData.spWebsite_SelectPublic
 AS
 	SET NOCOUNT ON;
 
-	SELECT Website.WebsiteID, Website.Title, Website.[Owner] AS OwnerID, [User].UserName AS OwnerName, Website.[Description]
+	SELECT Website.WebsiteID, Website.Title, Website.OwnerID, [User].UserName AS OwnerName, Website.[Description]
 	FROM WebsiteData.Website AS Website
-	INNER JOIN WebsiteData.[User] AS [User] ON [User].UserID = Website.[Owner]
-	WHERE Website.Visibility = 1;
+	INNER JOIN WebsiteData.[User] AS [User] ON [User].UserID = Website.OwnerID
+	WHERE Website.VisibilityID = 1;
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Insert
@@ -301,7 +299,7 @@ AS
 	DECLARE @PageID int;
 	
 	INSERT INTO WebsiteData.[Page] (Title)
-	VALUES(@Title)
+	VALUES(@Title);
 	SET @PageID = SCOPE_IDENTITY();
 
 	INSERT INTO WebsiteData.WebsitePage (WebsiteID, PageID)
@@ -349,11 +347,11 @@ CREATE PROCEDURE WebsiteData.spPage_SelectForWebsite
 AS
 	SET NOCOUNT ON;
 
-	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePage = [Page].PageID THEN 1 ELSE 0 END AS HomePage
+	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage
 	FROM WebsiteData.[Page]
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
 	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
-	WHERE WebsitePage.WebsiteID = 1;
+	WHERE WebsitePage.WebsiteID = @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Select
@@ -361,7 +359,7 @@ CREATE PROCEDURE WebsiteData.spPage_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePage = [Page].PageID THEN 1 ELSE 0 END AS HomePage, WebsitePage.WebsiteID
+	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage, WebsitePage.WebsiteID
 	FROM WebsiteData.[Page]
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
 	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
@@ -373,10 +371,12 @@ CREATE PROCEDURE WebsiteData.spSection_Insert
 AS
 	SET NOCOUNT ON;
 	
-	DECLARE @SectionID int;
+	DECLARE @SectionID int, @WebsiteID int;
+
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 	
-	INSERT INTO WebsiteData.Section (Title, [Text])
-	VALUES(@Title, @Text)
+	INSERT INTO WebsiteData.Section (WebsiteID, Title, [Text])
+	VALUES(@WebsiteID, @Title, @Text)
 	SET @SectionID = SCOPE_IDENTITY();
 
 	INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position)
@@ -425,6 +425,22 @@ AS
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_SelectForWebsite
+	@PageID int
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @WebsiteID int;
+
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+	SELECT Section.SectionID, Section.Title, MAX(CASE WHEN PageSection.PageID = @PageID THEN 1 ELSE 0 END) AS IsSelected
+	FROM WebsiteData.Section
+	LEFT JOIN WebsiteData.PageSection ON Section.SectionID = PageSection.SectionID
+	WHERE Section.WebsiteID = @WebsiteID
+	GROUP BY Section.SectionID, Section.Title;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_SelectForPage

@@ -21,29 +21,6 @@ CREATE TABLE WebsiteData.UserSocialMedia
 );
 
 USE TheWritersNetDB;
-CREATE TABLE WebsiteData.Section
-(
-	SectionID int NOT NULL IDENTITY PRIMARY KEY,
-	Title nvarchar(100) NOT NULL,
-	Text nvarchar(MAX) NOT NULL
-);
-
-USE TheWritersNetDB;
-CREATE TABLE WebsiteData.[Page]
-(
-	PageID int NOT NULL IDENTITY PRIMARY KEY,
-	Title nvarchar(100) NOT NULL
-);
-
-USE TheWritersNetDB;
-CREATE TABLE WebsiteData.PageSection
-(
-	PageID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID),
-	SectionID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Section (SectionID),
-	Position nvarchar(500) NOT NULL
-);
-
-USE TheWritersNetDB;
 CREATE TABLE WebsiteData.Visibility
 (
 	VisibilityID int NOT NULL IDENTITY PRIMARY KEY,
@@ -55,14 +32,38 @@ INSERT INTO WebsiteData.Visibility ([Name])
 VALUES ('Public'), ('Private');
 
 USE TheWritersNetDB;
+CREATE TABLE WebsiteData.[Page]
+(
+	PageID int NOT NULL IDENTITY PRIMARY KEY,
+	Title nvarchar(100) NOT NULL
+);
+
+USE TheWritersNetDB;
 CREATE TABLE WebsiteData.Website 
 (
 	WebsiteID int NOT NULL IDENTITY PRIMARY KEY,
 	Title nvarchar(100) NOT NULL,
-	HomePage int FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID),
-	[Owner] int NOT NULL REFERENCES WebsiteData.[User] (UserID),
-	Visibility int NOT NULL REFERENCES WebsiteData.Visibility (VisibilityID),
+	HomePageID int FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID),
+	OwnerID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
+	VisibilityID int NOT NULL REFERENCES WebsiteData.Visibility (VisibilityID),
 	[Description] nvarchar(1000)
+);
+
+USE TheWritersNetDB;
+CREATE TABLE WebsiteData.Section
+(
+	SectionID int NOT NULL IDENTITY PRIMARY KEY,
+	WebsiteID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Website (WebsiteID),
+	Title nvarchar(100) NOT NULL,
+	Text nvarchar(MAX) NOT NULL
+);
+
+USE TheWritersNetDB;
+CREATE TABLE WebsiteData.PageSection
+(
+	PageID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID),
+	SectionID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Section (SectionID),
+	Position nvarchar(500) NOT NULL
 );
 
 USE TheWritersNetDB;
@@ -88,7 +89,7 @@ CREATE TABLE WebsiteData.WebsitePermission
 (
 	WebsiteID int NOT NULL REFERENCES WebsiteData.Website (WebsiteID),
 	UserID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
-	Ability int NOT NULL REFERENCES WebsiteData.Ability (AbilityID)
+	AbilityID int NOT NULL REFERENCES WebsiteData.Ability (AbilityID)
 );
 
 USE TheWritersNetDB;

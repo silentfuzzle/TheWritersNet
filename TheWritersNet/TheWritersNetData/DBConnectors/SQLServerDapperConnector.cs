@@ -122,7 +122,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spWebsite_Insert @Title, @LoginID, @Visibility, @Description", websites);
+                connection.Execute("WebsiteData.spWebsite_Insert @Title, @LoginID, @VisibilityID, @Description", websites);
             }
         }
 
@@ -302,6 +302,14 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPage @PageID", new { PageID = pageID }).ToList();
+            }
+        }
+
+        public List<SectionModel> SelectWebsiteSections(int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForWebsite @PageID", new { PageID = pageID }).ToList();
             }
         }
 

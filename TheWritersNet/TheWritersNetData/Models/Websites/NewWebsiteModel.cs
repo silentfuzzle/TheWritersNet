@@ -14,7 +14,7 @@ namespace TheWritersNetData.Models.Websites
 
         public string LoginID { get; set; }
 
-        public int Visibility { get; set; }
+        public int VisibilityID { get; set; }
 
         public string Description { get; set; }
     }

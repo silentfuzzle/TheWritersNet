@@ -88,6 +88,8 @@ namespace TheWritersNetData.DBConnectors
 
         List<SectionModel> SelectPageSections(int pageID);
 
+        List<SectionModel> SelectWebsiteSections(int pageID);
+
         #endregion
     }
 }
