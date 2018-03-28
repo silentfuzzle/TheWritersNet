@@ -1,9 +1,8 @@
 # TheWritersNet
 
-TODO
-===
+## TODO
 
-*Website Functionality*
+### Website Functionality
 * Add ability to view web pages
 * Add ability to view a website's homepage
 * Add ability to add tags to users
@@ -12,7 +11,7 @@ TODO
 * Add ability to remove social media accounts from users
 * Add ability to edit social media accounts
 
-*Website Cleanup and Security*
+### Website Cleanup and Security
 * Database needs to verify that users have permission to view resources/perform actions
 * Separate database models from view models
 * Better to grab data from the database every time?
