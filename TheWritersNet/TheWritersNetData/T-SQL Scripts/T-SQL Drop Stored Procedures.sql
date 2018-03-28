@@ -1,5 +1,6 @@
 DROP PROCEDURE WebsiteData.spSection_Select;
-DROP PROCEDURE WebsiteData.spSection_SelectForPage;
+DROP PROCEDURE WebsiteData.spSection_SelectForPageView;
+DROP PROCEDURE WebsiteData.spSection_SelectForPageEdit;
 DROP PROCEDURE WebsiteData.spSection_DeleteFromPage;
 DROP PROCEDURE WebsiteData.spSection_Delete;
 DROP PROCEDURE WebsiteData.spSection_Update;

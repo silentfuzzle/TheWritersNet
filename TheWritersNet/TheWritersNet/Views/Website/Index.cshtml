@@ -32,7 +32,7 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.ActionLink("View", "Display", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("View", "Display", "Page", new { pageID=item.HomePageID }, new { })
         </td>
     </tr>
 }

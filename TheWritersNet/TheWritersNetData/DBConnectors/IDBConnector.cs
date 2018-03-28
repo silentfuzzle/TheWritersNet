@@ -100,7 +100,9 @@ namespace TheWritersNetData.DBConnectors
 
         SectionModel SelectSection(int sectionID);
 
-        List<SectionModel> SelectPageSections(int pageID);
+        List<SectionModel> SelectEditPageSections(int pageID);
+
+        List<SectionModel> SelectViewPageSections(int pageID);
 
         #endregion
     }

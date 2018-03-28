@@ -12,9 +12,19 @@ namespace TheWritersNet.Controllers
     public class PageController : Controller
     {
         // GET: Page
-        public ActionResult Display(int pageID, string title)
+        public ActionResult Display(int pageID)
         {
-            return View();
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            
+            DBPageModel dbPage = db.SelectPage(pageID);
+            PageModel page = new PageModel()
+            {
+                Title = dbPage.Title,
+                DisplayTitle = dbPage.DisplayTitle
+            };
+            page.Sections = db.SelectViewPageSections(pageID);
+
+            return View(page);
         }
 
         [Authorize]
@@ -56,7 +66,7 @@ namespace TheWritersNet.Controllers
             db.UpdatePage(new DBPageModel() { PageID = page.PageID, Title = page.Title, DisplayTitle = page.DisplayTitle });
             db.UpdateWebsiteHomePage(page.WebsiteID, page.PageID, page.HomePage);
 
-            page.Sections = db.SelectPageSections(page.PageID);
+            page.Sections = db.SelectEditPageSections(page.PageID);
 
             return View(page);
         }
@@ -89,7 +99,7 @@ namespace TheWritersNet.Controllers
             };
 
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            page.Sections = db.SelectPageSections(webpage.PageID);
+            page.Sections = db.SelectEditPageSections(webpage.PageID);
 
             return page;
         }

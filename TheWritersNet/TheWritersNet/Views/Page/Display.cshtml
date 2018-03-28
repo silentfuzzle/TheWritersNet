@@ -1,0 +1,28 @@
+﻿@model TheWritersNet.Models.PageModel
+
+@{
+    ViewBag.Title = "Display";
+}
+
+<div>
+    @if (Model.DisplayTitle)
+    {
+        <h2>
+            @Html.DisplayFor(model => model.Title)
+        </h2>
+    }
+
+    @foreach (var item in Model.Sections)
+    {
+        if (item.DisplayTitle)
+        {
+            <h3>
+                @Html.DisplayFor(modelItem => item.Title)
+            </h3>
+        }
+
+        <p>
+            @Html.DisplayFor(modelItem => item.Text)
+        </p>
+    }
+</div>

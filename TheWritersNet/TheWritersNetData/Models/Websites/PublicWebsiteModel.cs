@@ -12,6 +12,8 @@ namespace TheWritersNetData.Models.Websites
 
         public string Title { get; set; }
 
+        public int HomePageID { get; set; }
+
         public int OwnerID { get; set; }
 
         public string OwnerName { get; set; }

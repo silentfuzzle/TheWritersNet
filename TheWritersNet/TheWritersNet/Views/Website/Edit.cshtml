@@ -100,7 +100,7 @@
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Page", item, new { }) |
-                    @Html.ActionLink("View", "Display", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("View", "Display", "Page", new { item.PageID }, new { }) |
                     @Html.ActionLink("Delete", "Delete", "Page", item, new { })
                 </td>
             </tr>

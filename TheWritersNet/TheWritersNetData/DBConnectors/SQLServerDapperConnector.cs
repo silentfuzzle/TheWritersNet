@@ -343,11 +343,19 @@ namespace TheWritersNetData.DBConnectors
             return null;
         }
 
-        public List<SectionModel> SelectPageSections(int pageID)
+        public List<SectionModel> SelectEditPageSections(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPage @PageID", new { PageID = pageID }).ToList();
+                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPageEdit @PageID", new { PageID = pageID }).ToList();
+            }
+        }
+
+        public List<SectionModel> SelectViewPageSections(int pageID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPageView @PageID", new { PageID = pageID }).ToList();
             }
         }
 

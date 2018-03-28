@@ -328,6 +328,7 @@
     <Content Include="Views\Permission\Create.cshtml" />
     <Content Include="Views\Permission\Edit.cshtml" />
     <Content Include="Views\Permission\Delete.cshtml" />
+    <Content Include="Views\Page\Display.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

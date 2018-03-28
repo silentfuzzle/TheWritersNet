@@ -42,7 +42,7 @@
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", item) |
-            @Html.ActionLink("View", "Display", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("View", "Display", "Page", new { pageID=item.HomePageID }, new { }) |
             @Html.ActionLink("Delete", "Delete", item)
         </td>
     </tr>

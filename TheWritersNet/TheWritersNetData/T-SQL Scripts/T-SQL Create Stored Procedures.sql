@@ -289,7 +289,8 @@ AS
 
 	SELECT 
 		Website.WebsiteID, 
-		Website.Title, 
+		Website.Title,
+		Website.HomePageID,
 		Website.VisibilityID, 
 		Visibility.[Name] AS Visibility, 
 		Website.[Description], 
@@ -306,7 +307,7 @@ CREATE PROCEDURE WebsiteData.spWebsite_SelectPublic
 AS
 	SET NOCOUNT ON;
 
-	SELECT Website.WebsiteID, Website.Title, Website.OwnerID, [User].UserName AS OwnerName, Website.[Description]
+	SELECT Website.WebsiteID, Website.Title, Website.HomePageID, Website.OwnerID, [User].UserName AS OwnerName, Website.[Description]
 	FROM WebsiteData.Website AS Website
 	INNER JOIN WebsiteData.[User] AS [User] ON [User].UserID = Website.OwnerID
 	WHERE Website.VisibilityID = 1;
@@ -492,12 +493,24 @@ AS
 	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
 GO
 
-CREATE PROCEDURE WebsiteData.spSection_SelectForPage
+CREATE PROCEDURE WebsiteData.spSection_SelectForPageEdit
 	@PageID int
 AS
 	SET NOCOUNT ON;
 
 	SELECT Section.SectionID, Section.Title, PageSection.Position
+	FROM WebsiteData.Section
+	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
+	WHERE PageSection.PageID = @PageID
+	ORDER BY PageSection.Position;
+GO
+
+CREATE PROCEDURE WebsiteData.spSection_SelectForPageView
+	@PageID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT Section.Title, Section.Text, PageSection.Position, PageSection.DisplayTitle
 	FROM WebsiteData.Section
 	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
 	WHERE PageSection.PageID = @PageID
