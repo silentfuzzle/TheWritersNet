@@ -35,12 +35,35 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Insert
-	@WebsiteID int, @UserID int, @AbilityID int
+	@WebsiteID int, @UserName nvarchar(50), @AbilityID int
+AS
+	SET NOCOUNT ON;
+	
+	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, AbilityID)
+	VALUES(@WebsiteID, (SELECT TOP 1 UserID FROM WebsiteData.[User] WHERE UserName = @UserName), @AbilityID)
+GO
+
+CREATE PROCEDURE WebsiteData.spPermission_Update
+	@WebsiteID int, @UserName nvarchar(50), @AbilityID int
 AS
 	SET NOCOUNT ON;
 
-	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, AbilityID)
-	VALUES(@WebsiteID, @UserID, @AbilityID)
+	UPDATE WebsitePermission
+	SET AbilityID = @AbilityID
+	FROM WebsiteData.WebsitePermission
+	INNER JOIN WebsiteData.[User] ON WebsitePermission.UserID = [User].UserID
+	WHERE [User].UserName = @UserName AND WebsitePermission.WebsiteID = @WebsiteID;
+GO
+
+CREATE PROCEDURE WebsiteData.spPermission_Delete
+	@WebsiteID int, @UserName nvarchar(50)
+AS
+	SET NOCOUNT ON;
+	
+	DELETE WebsitePermission
+	FROM WebsiteData.WebsitePermission
+	INNER JOIN WebsiteData.[User] ON WebsitePermission.UserID = [User].UserID
+	WHERE WebsitePermission.WebsiteID = @WebsiteID AND [User].UserName = @UserName;
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Select
@@ -163,8 +186,9 @@ AS
 	INSERT INTO WebsiteData.Website (Title, HomePageID, OwnerID, VisibilityID, [Description])
 	VALUES(@Title, NULL, @UserID, @VisibilityID, @Description)
 	SET @WebsiteID = SCOPE_IDENTITY();
-
-	EXEC WebsiteData.spPermission_Insert @WebsiteID, @UserID, 1;
+	
+	INSERT INTO WebsiteData.WebsitePermission (WebsiteID, UserID, AbilityID)
+	VALUES(@WebsiteID, @UserID, 1)
 GO
 
 CREATE PROCEDURE WebsiteData.spWebsite_Update

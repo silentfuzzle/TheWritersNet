@@ -26,6 +26,8 @@ DROP PROCEDURE WebsiteData.spTag_UpdateForWebsite;
 DROP PROCEDURE WebsiteData.spTag_DeleteForWebsite;
 DROP PROCEDURE WebsiteData.spTag_InsertForWebsite;
 DROP PROCEDURE WebsiteData.spPermission_Select;
+DROP PROCEDURE WebsiteData.spPermission_Delete;
+DROP PROCEDURE WebsiteData.spPermission_Update;
 DROP PROCEDURE WebsiteData.spPermission_Insert;
 DROP PROCEDURE WebsiteData.spUser_Select;
 DROP PROCEDURE WebsiteData.spUser_SelectID;

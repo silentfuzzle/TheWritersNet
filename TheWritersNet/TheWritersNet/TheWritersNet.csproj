@@ -193,6 +193,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PageController.cs" />
+    <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\SectionController.cs" />
     <Compile Include="Controllers\TagController.cs" />
@@ -324,6 +325,9 @@
     <Content Include="Views\Section\Display.cshtml" />
     <Content Include="Views\Section\SelectSections.cshtml" />
     <Content Include="Views\Section\EditorTemplates\SectionModel.cshtml" />
+    <Content Include="Views\Permission\Create.cshtml" />
+    <Content Include="Views\Permission\Edit.cshtml" />
+    <Content Include="Views\Permission\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

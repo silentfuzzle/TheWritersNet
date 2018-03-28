@@ -58,7 +58,25 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserID, @AbilityID", permissions);
+                connection.Execute("WebsiteData.spPermission_Insert @WebsiteID, @UserName, @AbilityID", permissions);
+            }
+        }
+
+        public void UpdatePermission(PermissionModel permission)
+        {
+            List<PermissionModel> permissions = new List<PermissionModel>() { permission };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPermission_Update @WebsiteID, @UserName, @AbilityID", permissions);
+            }
+        }
+
+        public void DeletePermission(int websiteID, string userName)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spPermission_Delete @WebsiteID, @UserName", new { WebsiteID = websiteID, UserName = userName });
             }
         }
 

@@ -24,6 +24,10 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertPermission(PermissionModel permission);
 
+        void UpdatePermission(PermissionModel permission);
+
+        void DeletePermission(int websiteID, string userName);
+
         List<PermissionModel> SelectWebsitePermissions(int websiteID);
 
         #endregion
