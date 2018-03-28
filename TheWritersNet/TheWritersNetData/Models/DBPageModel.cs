@@ -11,6 +11,7 @@ namespace TheWritersNetData.Models
         public int PageID { get; set; }
         public int WebsiteID { get; set; }
         public string Title { get; set; }
+        public bool DisplayTitle { get; set; }
         public bool HomePage { get; set; }
     }
 }

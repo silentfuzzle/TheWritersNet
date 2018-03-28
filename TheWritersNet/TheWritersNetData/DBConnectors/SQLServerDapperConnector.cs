@@ -68,15 +68,15 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPermission_Update @WebsiteID, @UserName, @AbilityID", permissions);
+                connection.Execute("WebsiteData.spPermission_Update @PermissionID, @AbilityID", permissions);
             }
         }
 
-        public void DeletePermission(int websiteID, string userName)
+        public void DeletePermission(int permissionID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPermission_Delete @WebsiteID, @UserName", new { WebsiteID = websiteID, UserName = userName });
+                connection.Execute("WebsiteData.spPermission_Delete @PermissionID", new { PermissionID = permissionID });
             }
         }
 
@@ -208,7 +208,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPage_Insert @WebsiteID, @Title, @HomePage", pages);
+                connection.Execute("WebsiteData.spPage_Insert @WebsiteID, @Title, @DisplayTitle, @HomePage", pages);
             }
         }
 
@@ -218,7 +218,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPage_Update @PageID, @Title", pages);
+                connection.Execute("WebsiteData.spPage_Update @PageID, @Title, @DisplayTitle", pages);
             }
         }
 
@@ -261,7 +261,7 @@ namespace TheWritersNetData.DBConnectors
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPosition_Insert @PageID, @SectionID, @Position", sections);
+                connection.Execute("WebsiteData.spPosition_Insert @PageID, @SectionID, @Position, @DisplayTitle", sections);
             }
         }
 
@@ -271,7 +271,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spPosition_Update @SectionID, @PageID, @Position", sections);
+                connection.Execute("WebsiteData.spPosition_Update @SectionID, @PageID, @Position, @DisplayTitle", sections);
             }
         }
 
@@ -301,7 +301,7 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spSection_Insert @PageID, @Title, @Position, @Text", sections);
+                connection.Execute("WebsiteData.spSection_Insert @PageID, @Title, @Text, @Position, @DisplayTitle", sections);
             }
         }
 

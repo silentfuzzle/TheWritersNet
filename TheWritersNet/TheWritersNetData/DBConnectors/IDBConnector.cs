@@ -26,7 +26,7 @@ namespace TheWritersNetData.DBConnectors
 
         void UpdatePermission(PermissionModel permission);
 
-        void DeletePermission(int websiteID, string userName);
+        void DeletePermission(int permissionID);
 
         List<PermissionModel> SelectWebsitePermissions(int websiteID);
 

@@ -44,26 +44,23 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Update
-	@WebsiteID int, @UserName nvarchar(50), @AbilityID int
+	@PermissionID int, @AbilityID int
 AS
 	SET NOCOUNT ON;
 
-	UPDATE WebsitePermission
+	UPDATE WebsiteData.WebsitePermission
 	SET AbilityID = @AbilityID
-	FROM WebsiteData.WebsitePermission
-	INNER JOIN WebsiteData.[User] ON WebsitePermission.UserID = [User].UserID
-	WHERE [User].UserName = @UserName AND WebsitePermission.WebsiteID = @WebsiteID;
+	WHERE WebsitePermission.PermissionID = @PermissionID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Delete
-	@WebsiteID int, @UserName nvarchar(50)
+	@PermissionID int
 AS
 	SET NOCOUNT ON;
 	
 	DELETE WebsitePermission
 	FROM WebsiteData.WebsitePermission
-	INNER JOIN WebsiteData.[User] ON WebsitePermission.UserID = [User].UserID
-	WHERE WebsitePermission.WebsiteID = @WebsiteID AND [User].UserName = @UserName;
+	WHERE WebsitePermission.PermissionID = @PermissionID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPermission_Select
@@ -71,7 +68,7 @@ CREATE PROCEDURE WebsiteData.spPermission_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [User].UserID, [User].UserName, WebsitePermission.AbilityID, Ability.[Name] AS Ability
+	SELECT WebsitePermission.PermissionID, [User].UserName, WebsitePermission.AbilityID, Ability.[Name] AS Ability
 	FROM WebsiteData.[User]
 	INNER JOIN WebsiteData.WebsitePermission ON [User].UserID = WebsitePermission.UserID
 	INNER JOIN WebsiteData.Ability ON Ability.AbilityID = WebsitePermission.AbilityID
@@ -316,14 +313,14 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Insert
-	@WebsiteID int, @Title nvarchar(100), @HomePage bit
+	@WebsiteID int, @Title nvarchar(100), @DisplayTitle bit, @HomePage bit
 AS
 	SET NOCOUNT ON;
 
 	DECLARE @PageID int;
 	
-	INSERT INTO WebsiteData.[Page] (Title)
-	VALUES(@Title);
+	INSERT INTO WebsiteData.[Page] (Title, DisplayTitle)
+	VALUES(@Title, @DisplayTitle);
 	SET @PageID = SCOPE_IDENTITY();
 
 	INSERT INTO WebsiteData.WebsitePage (WebsiteID, PageID)
@@ -333,12 +330,12 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Update
-	@PageID int, @Title nvarchar(100)
+	@PageID int, @Title nvarchar(100), @DisplayTitle bit
 AS
 	SET NOCOUNT ON;
 	
 	UPDATE WebsiteData.[Page]
-	SET [Page].Title = @Title
+	SET [Page].Title = @Title, [Page].DisplayTitle = @DisplayTitle
 	WHERE [Page].PageID = @PageID;
 GO
 
@@ -371,7 +368,7 @@ CREATE PROCEDURE WebsiteData.spPage_SelectForWebsite
 AS
 	SET NOCOUNT ON;
 
-	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage
+	SELECT [Page].PageID, [Page].Title, [Page].DisplayTitle, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage
 	FROM WebsiteData.[Page]
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
 	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
@@ -383,7 +380,7 @@ CREATE PROCEDURE WebsiteData.spPage_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT [Page].PageID, [Page].Title, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage, WebsitePage.WebsiteID
+	SELECT [Page].PageID, [Page].Title, [Page].DisplayTitle, CASE WHEN Website.HomePageID = [Page].PageID THEN 1 ELSE 0 END AS HomePage, WebsitePage.WebsiteID
 	FROM WebsiteData.[Page]
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = [Page].PageID
 	INNER JOIN WebsiteData.Website ON Website.WebsiteID = WebsitePage.WebsiteID
@@ -391,28 +388,28 @@ AS
 GO
 
 CREATE PROCEDURE WebsiteData.spPosition_Update
-	@SectionID int, @PageID int, @Position nvarchar(500)
+	@SectionID int, @PageID int, @Position nvarchar(500), @DisplayTitle bit
 AS
 	SET NOCOUNT ON;
 	
 	UPDATE WebsiteData.PageSection
-	SET PageSection.Position = @Position
+	SET PageSection.Position = @Position, PageSection.DisplayTitle = @DisplayTitle
 	WHERE PageSection.SectionID = @SectionID AND PageSection.PageID = @PageID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPosition_Insert
-	@PageID int, @SectionID int, @Position nvarchar(500)
+	@PageID int, @SectionID int, @Position nvarchar(500), @DisplayTitle bit
 AS
 	SET NOCOUNT ON;
 
 	IF NOT EXISTS (SELECT PageSection.PageID FROM WebsiteData.PageSection WHERE PageID = @PageID AND SectionID = @SectionID)
 		BEGIN
-			INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position)
-			VALUES (@PageID, @SectionID, @Position);
+			INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position, DisplayTitle)
+			VALUES (@PageID, @SectionID, @Position, @DisplayTitle);
 		END
 	ELSE
 		BEGIN
-			EXEC WebsiteData.spPosition_Update @SectionID, @PageID, @Position
+			EXEC WebsiteData.spPosition_Update @SectionID, @PageID, @Position, @DisplayTitle
 		END
 GO
 
@@ -435,15 +432,18 @@ AS
 
 	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 	
-	SELECT Section.SectionID, Section.Title, PageSection.Position, MAX(CASE WHEN PageSection.PageID = @PageID THEN 1 ELSE 0 END) AS IsSelected
+	SELECT 
+		Section.SectionID, Section.Title, 
+		PageSection.Position, PageSection.DisplayTitle, 
+		MAX(CASE WHEN PageSection.PageID = @PageID THEN 1 ELSE 0 END) AS IsSelected
 	FROM WebsiteData.Section
 	LEFT JOIN WebsiteData.PageSection ON Section.SectionID = PageSection.SectionID AND PageSection.PageID = @PageID
 	WHERE Section.WebsiteID = @WebsiteID
-	GROUP BY Section.SectionID, Section.Title, PageSection.Position;
+	GROUP BY Section.SectionID, Section.Title, PageSection.Position, PageSection.DisplayTitle;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_Insert
-	@PageID int, @Title nvarchar(100), @Position nvarchar(500), @Text nvarchar(max)
+	@PageID int, @Title nvarchar(100), @Text nvarchar(max), @Position nvarchar(500), @DisplayTitle bit
 AS
 	SET NOCOUNT ON;
 	
@@ -455,7 +455,7 @@ AS
 	VALUES(@WebsiteID, @Title, @Text)
 	SET @SectionID = SCOPE_IDENTITY();
 
-	EXEC WebsiteData.spPosition_Insert @PageID, @SectionID, @Position;
+	EXEC WebsiteData.spPosition_Insert @PageID, @SectionID, @Position, @DisplayTitle;
 GO
 
 CREATE PROCEDURE WebsiteData.spSection_Update
@@ -509,7 +509,7 @@ CREATE PROCEDURE WebsiteData.spSection_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT Section.SectionID, Section.Title, Section.[Text], PageSection.Position
+	SELECT Section.SectionID, Section.Title, Section.[Text], PageSection.Position, PageSection.DisplayTitle
 	FROM WebsiteData.Section
 	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = Section.SectionID
 	WHERE Section.SectionID = @SectionID;

@@ -134,8 +134,8 @@
                     @Html.DisplayFor(modelItem => item.Ability)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Permission", new { websiteID = Model.WebsiteID, userName = item.UserName, abilityID = item.AbilityID }, new { }) |
-                    @Html.ActionLink("Delete", "Delete", "Permission", new { websiteID = Model.WebsiteID, userName = item.UserName, ability = item.Ability }, new { })
+                    @Html.ActionLink("Edit", "Edit", "Permission", new { websiteID = Model.WebsiteID, permissionID = item.PermissionID, userName = item.UserName, abilityID = item.AbilityID }, new { }) |
+                    @Html.ActionLink("Delete", "Delete", "Permission", new { websiteID = Model.WebsiteID, permissionID = item.PermissionID, userName = item.UserName, ability = item.Ability }, new { })
                 </td>
             </tr>
         }

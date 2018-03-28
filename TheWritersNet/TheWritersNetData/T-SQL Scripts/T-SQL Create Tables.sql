@@ -35,7 +35,8 @@ USE TheWritersNetDB;
 CREATE TABLE WebsiteData.[Page]
 (
 	PageID int NOT NULL IDENTITY PRIMARY KEY,
-	Title nvarchar(100) NOT NULL
+	Title nvarchar(100) NOT NULL,
+	DisplayTitle bit NOT NULL
 );
 
 USE TheWritersNetDB;
@@ -63,7 +64,8 @@ CREATE TABLE WebsiteData.PageSection
 (
 	PageID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID),
 	SectionID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Section (SectionID),
-	Position nvarchar(500) NOT NULL
+	Position nvarchar(500) NOT NULL,
+	DisplayTitle bit NOT NULL
 );
 
 USE TheWritersNetDB;
@@ -87,6 +89,7 @@ VALUES ('Owner'), ('Admin'), ('Writer'), ('Viewer');
 USE TheWritersNetDB;
 CREATE TABLE WebsiteData.WebsitePermission
 (
+	PermissionID int NOT NULL IDENTITY PRIMARY KEY,
 	WebsiteID int NOT NULL REFERENCES WebsiteData.Website (WebsiteID),
 	UserID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
 	AbilityID int NOT NULL REFERENCES WebsiteData.Ability (AbilityID)

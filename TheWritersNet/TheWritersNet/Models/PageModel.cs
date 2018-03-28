@@ -12,6 +12,7 @@ namespace TheWritersNet.Models
         public int WebsiteID { get; set; }
         public string Title { get; set; }
         public bool HomePage { get; set; }
+        public bool DisplayTitle { get; set; }
         public List<SectionModel> Sections { get; set; }
     }
 }

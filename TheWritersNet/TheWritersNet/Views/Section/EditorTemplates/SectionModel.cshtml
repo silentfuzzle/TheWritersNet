@@ -3,8 +3,11 @@
 <div>
     @Html.HiddenFor(x => x.SectionID)
     @Html.HiddenFor(x => x.PageID)
-    @Html.LabelFor(x => x.IsSelected, Model.Title)
+    @Html.LabelFor(x => x.Title)
+    @Html.LabelFor(x => x.IsSelected, "Include in Page")
     @Html.CheckBoxFor(x => x.IsSelected)
+    @Html.LabelFor(x => x.DisplayTitle)
+    @Html.CheckBoxFor(x => x.DisplayTitle)
     @Html.TextBoxFor(x => x.Position)
 </div>
 

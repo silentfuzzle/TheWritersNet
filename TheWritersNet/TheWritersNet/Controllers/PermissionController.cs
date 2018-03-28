@@ -31,11 +31,11 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
-        public ActionResult Edit(int websiteID, string userName, int abilityID)
+        public ActionResult Edit(int websiteID, int permissionID, string userName, int abilityID)
         {
             ViewBag.PermissionOptions = DropDownGenerator.GetPermissionDropDown(abilityID - 1);
 
-            PermissionModel permission = new PermissionModel() { WebsiteID = websiteID, UserName = userName, AbilityID = abilityID };
+            PermissionModel permission = new PermissionModel() { WebsiteID = websiteID, PermissionID = permissionID, UserName = userName, AbilityID = abilityID };
             return View(permission);
         }
 
@@ -50,9 +50,9 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
-        public ActionResult Delete(int websiteID, string userName, string ability)
+        public ActionResult Delete(int websiteID, int permissionID, string userName, string ability)
         {
-            PermissionModel permission = new PermissionModel() { WebsiteID = websiteID, UserName = userName, Ability = ability };
+            PermissionModel permission = new PermissionModel() { WebsiteID = websiteID, PermissionID = permissionID, UserName = userName, Ability = ability };
             return View(permission);
         }
 
@@ -61,7 +61,7 @@ namespace TheWritersNet.Controllers
         public ActionResult Delete(PermissionModel permission)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            db.DeletePermission(permission.WebsiteID, permission.UserName);
+            db.DeletePermission(permission.PermissionID);
 
             return RedirectToAction("EditFromID", "Website", new { websiteID = permission.WebsiteID });
         }

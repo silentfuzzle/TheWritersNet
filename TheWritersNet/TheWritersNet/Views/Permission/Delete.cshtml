@@ -33,7 +33,7 @@
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.WebsiteID)
-        @Html.HiddenFor(model => model.UserName)
+        @Html.HiddenFor(model => model.PermissionID)
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |

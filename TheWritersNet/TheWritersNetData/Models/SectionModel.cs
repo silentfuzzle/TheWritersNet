@@ -14,5 +14,6 @@ namespace TheWritersNetData.Models
         public string Title { get; set; }
         public string Text { get; set; }
         public string Position { get; set; }
+        public bool DisplayTitle { get; set; }
     }
 }
