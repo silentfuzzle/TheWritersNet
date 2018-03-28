@@ -36,11 +36,19 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertWebsiteTag(TagModel tag);
 
+        void InsertUserTag(TagModel tag);
+
         void UpdateWebsiteTag(TagModel tag);
+
+        void UpdateUserTag(TagModel tag);
 
         void DeleteWebsiteTag(TagModel tag);
 
+        void DeleteUserTag(TagModel tag);
+
         List<TagModel> SelectWebsiteTags(int websiteID);
+
+        List<TagModel> SelectUserTags(string loginID);
 
         #endregion
 

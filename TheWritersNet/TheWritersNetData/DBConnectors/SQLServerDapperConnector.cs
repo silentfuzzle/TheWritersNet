@@ -102,6 +102,16 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public void InsertUserTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_InsertForUser @LoginID, @Text", tags);
+            }
+        }
+
         public void UpdateWebsiteTag(TagModel tag)
         {
             List<TagModel> tags = new List<TagModel>() { tag };
@@ -109,6 +119,16 @@ namespace TheWritersNetData.DBConnectors
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 connection.Execute("WebsiteData.spTag_UpdateForWebsite @TagID, @WebsiteID, @Text", tags);
+            }
+        }
+
+        public void UpdateUserTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_UpdateForUser @TagID, @LoginID, @Text", tags);
             }
         }
 
@@ -122,11 +142,29 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public void DeleteUserTag(TagModel tag)
+        {
+            List<TagModel> tags = new List<TagModel>() { tag };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spTag_DeleteForUser @TagID, @LoginID", tags);
+            }
+        }
+
         public List<TagModel> SelectWebsiteTags(int websiteID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
                 return connection.Query<TagModel>("WebsiteData.spTag_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
+            }
+        }
+
+        public List<TagModel> SelectUserTags(string loginID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<TagModel>("WebsiteData.spTag_SelectForUser @LoginID", new { LoginID = loginID }).ToList();
             }
         }
 

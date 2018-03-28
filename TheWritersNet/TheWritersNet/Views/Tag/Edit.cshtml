@@ -16,7 +16,6 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.TagID)
-        @Html.HiddenFor(model => model.UserID)
         @Html.HiddenFor(model => model.WebsiteID)
 
         <div class="form-group">
@@ -35,16 +34,16 @@
     </div>
 }
 
-@if (Model.UserID == -1)
+@if (Model.WebsiteID == -1)
 {
     <div>
-        @Html.ActionLink("Back to Website", "EditFromID", "Website", new { websiteID = Model.WebsiteID }, new { })
+        @Html.ActionLink("Back to Profile", "Edit", "Profile")
     </div>
 }
 else
 {
     <div>
-        @Html.ActionLink("Back to Profile", "Edit", "Profile")
+        @Html.ActionLink("Back to Website", "EditFromID", "Website", new { websiteID = Model.WebsiteID }, new { })
     </div>
 }
 

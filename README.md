@@ -3,8 +3,6 @@
 ## TODO
 
 ### Website Functionality
-* Add ability to add tags to users
-* Add ability to remove tags from users
 * Add ability to add social media accounts to users
 * Add ability to remove social media accounts from users
 * Add ability to edit social media accounts

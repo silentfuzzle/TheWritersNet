@@ -1,4 +1,4 @@
-﻿@model TheWritersNetData.Models.UserModel
+﻿@model TheWritersNet.Models.UserViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -27,6 +27,20 @@
 
     </dl>
 </div>
+
+<h4>Tags</h4>
+<table class="table">
+
+    @foreach (var item in Model.Tags)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+        </tr>
+    }
+
+</table>
 <p>
     @Html.ActionLink("Edit", "Edit")
 </p>
