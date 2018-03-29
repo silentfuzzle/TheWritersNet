@@ -37,6 +37,7 @@ namespace TheWritersNet.Controllers
                 Description = user.Description
             };
             userView.Tags = db.SelectUserTags(loginID);
+            userView.SocialMediaAccounts = db.SelectUserSocialMedia(loginID);
 
             return userView;
         }
@@ -55,6 +56,7 @@ namespace TheWritersNet.Controllers
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.UpdateUser(dbUser);
             user.Tags = db.SelectUserTags(dbUser.LoginID);
+            user.SocialMediaAccounts = db.SelectUserSocialMedia(dbUser.LoginID);
 
             return View(user);
         }

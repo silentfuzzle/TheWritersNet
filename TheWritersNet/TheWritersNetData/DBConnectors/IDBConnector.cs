@@ -20,6 +20,22 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Social Media
+
+        void InsertSocialMedia(SocialMediaModel socialMedia);
+
+        void UpdateSocialMedia(SocialMediaModel socialMedia);
+
+        void DeleteSocialMedia(int userSocialMediaID);
+
+        SocialMediaModel SelectSocialMedia(int userSocialMediaID);
+
+        List<SocialMediaModel> SelectUserSocialMedia(string loginID);
+
+        List<SocialMediaModel> SelectSocialMediaOptions();
+
+        #endregion
+
         #region Permissions
 
         void InsertPermission(PermissionModel permission);

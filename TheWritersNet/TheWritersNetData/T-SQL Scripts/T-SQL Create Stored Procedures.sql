@@ -34,6 +34,64 @@ AS
 	SELECT * FROM WebsiteData.[User] WHERE LoginID = @LoginID;
 GO
 
+CREATE PROCEDURE WebsiteData.spSocialMedia_Insert
+	@LoginID nvarchar(50), @SocialMediaID int, @Address nvarchar(500), @AlternateText nvarchar(100)
+AS
+	SET NOCOUNT ON;
+
+	INSERT INTO WebsiteData.UserSocialMedia (SocialMediaID, UserID, [Address], [AlternateText])
+	VALUES (@SocialMediaID, (SELECT TOP 1 UserID FROM WebsiteData.[User] WHERE LoginID = @LoginID), @Address, @AlternateText);
+GO
+
+CREATE PROCEDURE WebsiteData.spSocialMedia_Update
+	@UserSocialMediaID int, @SocialMediaID int, @Address nvarchar(500), @AlternateText nvarchar(100)
+AS
+	SET NOCOUNT ON;
+
+	UPDATE WebsiteData.UserSocialMedia
+	SET SocialMediaID = @SocialMediaID, [Address] = @Address, AlternateText = @AlternateText
+	WHERE UserSocialMediaID = @UserSocialMediaID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSocialMedia_Delete
+	@UserSocialMediaID int
+AS
+	SET NOCOUNT ON;
+
+	DELETE UserSocialMedia
+	FROM WebsiteData.UserSocialMedia
+	WHERE UserSocialMediaID = @UserSocialMediaID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSocialMedia_Select
+	@UserSocialMediaID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT UserSocialMediaID, SocialMediaID, [Address], AlternateText
+	FROM WebsiteData.UserSocialMedia
+	WHERE UserSocialMediaID = @UserSocialMediaID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSocialMedia_SelectForUser
+	@LoginID nvarchar(50)
+AS
+	SET NOCOUNT ON;
+
+	SELECT UserSocialMedia.UserSocialMediaID, SocialMedia.[Name], UserSocialMedia.[Address], UserSocialMedia.AlternateText 
+	FROM WebsiteData.UserSocialMedia
+	INNER JOIN WebsiteData.[User] ON [User].UserID = UserSocialMedia.UserID
+	INNER JOIN WebsiteData.SocialMedia ON SocialMedia.SocialMediaID = UserSocialMedia.SocialMediaID
+	WHERE [User].LoginID = @LoginID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSocialMedia_SelectOptions
+AS
+	SET NOCOUNT ON;
+
+	SELECT * FROM WebsiteData.SocialMedia;
+GO
+
 CREATE PROCEDURE WebsiteData.spPermission_Insert
 	@WebsiteID int, @UserName nvarchar(50), @AbilityID int
 AS

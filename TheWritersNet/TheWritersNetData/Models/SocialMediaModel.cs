@@ -8,8 +8,11 @@ namespace TheWritersNetData.Models
 {
     public class SocialMediaModel
     {
+        public string LoginID { get; set; }
+        public int UserSocialMediaID { get; set; }
         public int SocialMediaID { get; set; }
-        public string WebsiteName { get; set; }
-        public string AccountAddress { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string AlternateText { get; set; }
     }
 }

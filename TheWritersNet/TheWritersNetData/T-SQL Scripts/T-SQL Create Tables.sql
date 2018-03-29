@@ -13,11 +13,24 @@ CREATE TABLE WebsiteData.[User]
 );
 
 USE TheWritersNetDB;
+CREATE TABLE WebsiteData.SocialMedia
+(
+	SocialMediaID int NOT NULL IDENTITY PRIMARY KEY,
+	[Name] nvarchar(50) NOT NULL
+);
+
+USE TheWritersNetDB;
+INSERT INTO WebsiteData.SocialMedia ([Name])
+VALUES ('Facebook'), ('Twitter'), ('Minds'), ('LinkedIn'), ('YouTube'), ('Google+'), ('GitHub'), ('Website'), ('Other');
+
+USE TheWritersNetDB;
 CREATE TABLE WebsiteData.UserSocialMedia
 (
+	UserSocialMediaID int NOT NULL IDENTITY PRIMARY KEY,
+	SocialMediaID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.SocialMedia (SocialMediaID),
 	UserID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.[User] (UserID),
-	WebsiteName nvarchar(500) NOT NULL,
-	AccountAddress nvarchar(500) NOT NULL
+	[Address] nvarchar(500) NOT NULL,
+	AlternateText nvarchar(100) NULL
 );
 
 USE TheWritersNetDB;

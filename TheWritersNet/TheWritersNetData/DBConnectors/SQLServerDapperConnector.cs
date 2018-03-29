@@ -50,6 +50,69 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Social Media
+
+        public void InsertSocialMedia(SocialMediaModel socialMedia)
+        {
+            List<SocialMediaModel> accounts = new List<SocialMediaModel>() { socialMedia };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSocialMedia_Insert @LoginID, @SocialMediaID, @Address, @AlternateText", accounts);
+            }
+        }
+
+        public void UpdateSocialMedia(SocialMediaModel socialMedia)
+        {
+            List<SocialMediaModel> accounts = new List<SocialMediaModel>() { socialMedia };
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSocialMedia_Update @UserSocialMediaID, @SocialMediaID, @Address, @AlternateText", accounts);
+            }
+        }
+
+        public void DeleteSocialMedia(int userSocialMediaID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSocialMedia_Delete @UserSocialMediaID", new { UserSocialMediaID = userSocialMediaID });
+            }
+        }
+
+        public SocialMediaModel SelectSocialMedia(int userSocialMediaID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<SocialMediaModel> socialMedia = connection.Query<SocialMediaModel>(
+                    "WebsiteData.spSocialMedia_Select @UserSocialMediaID", 
+                    new { UserSocialMediaID = userSocialMediaID }).ToList();
+
+                if (socialMedia.Count() > 0)
+                    return socialMedia.First();
+            }
+
+            return null;
+        }
+
+        public List<SocialMediaModel> SelectUserSocialMedia(string loginID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SocialMediaModel>("WebsiteData.spSocialMedia_SelectForUser @LoginID", new { LoginID = loginID }).ToList();
+            }
+        }
+
+        public List<SocialMediaModel> SelectSocialMediaOptions()
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SocialMediaModel>("WebsiteData.spSocialMedia_SelectOptions").ToList();
+            }
+        }
+
+        #endregion
+
         #region Permissions
 
         public void InsertPermission(PermissionModel permission)

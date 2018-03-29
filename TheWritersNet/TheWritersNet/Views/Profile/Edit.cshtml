@@ -38,6 +38,46 @@
     </div>
 }
 
+<h4>Social Media</h4>
+<p>
+    @Html.ActionLink("Create New", "Create", "SocialMedia")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Social Media
+        </th>
+        <th>
+            Account
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.SocialMediaAccounts)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @if (item.AlternateText != null)
+                {
+                    <a href="https://@item.Address">@item.AlternateText</a>
+                }
+                else
+                {
+                    <a href="https://@item.Address">Account</a>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", "SocialMedia", new { id=item.UserSocialMediaID }, new { }) |
+                @Html.ActionLink("Delete", "Delete", "SocialMedia", item, new { })
+            </td>
+        </tr>
+    }
+
+</table>
+
 <h4>Tags</h4>
 <p>
     @Html.ActionLink("Create New", "Create", "Tag", new { websiteID = -1 }, new { })
