@@ -168,7 +168,7 @@ namespace TheWritersNet.Controllers
                     int atSign = user.UserName.IndexOf('@');
                     string userName = user.UserName;
                     if (atSign != -1)
-                        userName = user.UserName.Substring(0, atSign + 1);
+                        userName = user.UserName.Substring(0, atSign);
 
                     IDBConnector db = DBConnectorFactory.GetDBConnector();
                     db.InsertUser(new UserModel() { LoginID = user.Id, UserName = userName });

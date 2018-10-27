@@ -54,6 +54,7 @@ namespace TheWritersNet.Controllers
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             SectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
+            section.Text = NewlineToHTML(MarkdownToHTML(section.Text));
 
             return View(section);
         }
@@ -113,6 +114,49 @@ namespace TheWritersNet.Controllers
             db.DeleteSectionFromPage(section.SectionID, section.PageID);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = section.PageID });
+        }
+
+        private string NewlineToHTML(string markdown)
+        {
+            markdown = markdown.Replace("\r\n", "<br>");
+            markdown = markdown.Replace("\n", "<br>");
+
+            return markdown;
+        }
+
+        private string MarkdownToHTML(string markdown)
+        {
+            markdown = SymbolPairToHTML("**", "strong", markdown);
+            markdown = SymbolPairToHTML("*", "em", markdown);
+            markdown = SymbolPairToHTML("_", "em", markdown);
+
+            return markdown;
+        }
+
+        private string SymbolPairToHTML(string symbol, string htmlTag, string markdown)
+        {
+            int index = 0;
+            int openIndex = -1;
+            while (index < markdown.Length)
+            {
+                index = markdown.IndexOf(symbol, index);
+                if (index == -1)
+                    index = markdown.Length;
+                else if (openIndex == -1)
+                    openIndex = index;
+                else
+                {
+                    markdown = markdown.Remove(index, symbol.Length);
+                    markdown = markdown.Insert(index, "</" + htmlTag + ">");
+                    markdown = markdown.Remove(openIndex, symbol.Length);
+                    markdown = markdown.Insert(openIndex, "<" + htmlTag + ">");
+                    openIndex = -1;
+                }
+
+                index++;
+            }
+
+            return markdown;
         }
     }
 }
