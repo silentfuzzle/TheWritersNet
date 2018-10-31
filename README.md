@@ -12,9 +12,6 @@
 * Add Existing sections to Page needs to display the actual section titles rather than "Title"
 * Handle html tags in text fields gracefully
 * Handle edge cases in markdown mistakes
-* external links [this](http://www.trello.com)
-* images ![this](http://www.images.com/1.png)
-* internal links ?[this](#)
 * - bulleted * lists
 * 1 numbered lists
 * #header 1
@@ -30,14 +27,13 @@
 * Store master Adventurous Reader map JSON in the database
 * Add links to Adventurous Reader map when user navigates between pages
 * Store user progress map JSON in the database
-* Add ability for users to add inline comments
-* Add ability for users to add inline critiques
 
 ### Nice to Have Website Functionality
-* Add ability for users to add links to outside websites
 * Add ability for users to create tables
 * Add ability for users to add images via url
 * Add ability for users to place sections side by side with bootstrap
+* Add ability for users to add inline comments
+* Add ability for users to add inline critiques
 * Add comment and critique voting system
 * Add user reputation
 
