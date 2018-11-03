@@ -4,25 +4,109 @@
     ViewBag.Title = "Display";
 }
 
-<div>
-    @if (Model.DisplayTitle)
-    {
-        <h2>
-            @Html.DisplayFor(model => model.Title)
-        </h2>
-    }
-
-    @foreach (var item in Model.Sections)
-    {
-        if (item.DisplayTitle)
-        {
-            <h3>
-                @Html.DisplayFor(modelItem => item.Title)
-            </h3>
+@section Styles
+{
+    <style>
+        .link {
+            fill: none;
         }
 
-        <p>
-            @Html.DisplayFor(modelItem => item.Text)
-        </p>
-    }
+        /* Arrows inherit opacity from .link style */
+        /* Default style of link arrows */
+        #default {
+            fill: #666;
+        }
+
+        /* Highlight style of link arrows */
+        #highlight {
+            fill: red;
+        }
+
+        .link.scroll {
+            stroke-dasharray: 0,2 1;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+
+        text {
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        #map {
+            min-width: 500px;
+            max-width: 500px;
+            min-height: 500px;
+        }
+
+            #map.active {
+                margin-left: -500px;
+            }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+    </style>
+}
+
+@section Scripts
+{
+    <script src="@Url.Content("~/Scripts/map/d3.v3.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/double_linked_nodes.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/crumb.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/network_node.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/historic_links.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/link_colorer.js")"></script>
+    <script src="@Url.Content("~/Scripts/map/map_renderer.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#map').toggleClass('active');
+            });
+
+        });
+
+        var test = `{"directed": true, "links": [{"target": 15, "source": 5, "type": "hyperlink"}, {"target": 17, "source": 6, "type": "scroll"}, {"target": 33, "source": 6, "type": "scroll"}, {"target": 37, "source": 13, "type": "hyperlink"}, {"target": 21, "source": 15, "type": "hyperlink"}, {"target": 13, "source": 17, "type": "scroll"}, {"target": 5, "source": 18, "type": "hyperlink"}, {"target": 5, "source": 21, "type": "hyperlink"}, {"target": 6, "source": 33, "type": "scroll"}, {"target": 18, "source": 37, "type": "hyperlink"}], "graph": [], "multigraph": false, "nodes": [{"pages": 1.0, "label": "113.0", "spine": 6, "title": "Wipe it away", "id": "113.0", "type": 2}, {"pages": 6.0, "label": "218.0", "spine": 29, "title": "Jigo's War", "id": "218.0", "type": 2}, {"pages": 1.0, "label": "289.0", "spine": 41, "title": "Adventurous Reader", "id": "289.0", "type": 2}, {"pages": 4.0, "label": "147.0", "spine": 17, "title": "Kadas (Bloodline)", "id": "147.0", "type": 2}, {"pages": 7.0, "label": "162.0", "spine": 20, "title": "Pajar Court", "id": "162.0", "type": 2}, {"pages": 4.0, "label": "198.0", "spine": 25, "title": "Baltarik", "id": "198.0", "type": 2}, {"pages": 17.0, "label": "3.0", "spine": 2, "title": "Now we won't be able to train for the rest of the day.", "id": "3.0", "type": 1}, {"pages": 1.0, "label": "120.0", "spine": 10, "title": "Palo's house", "id": "120.0", "type": 2}, {"pages": 2.0, "label": "287.0", "spine": 40, "title": "About Pajar", "id": "287.0", "type": 2}, {"pages": 1.0, "label": "286.0", "spine": 39, "title": "About the Author", "id": "286.0", "type": 2}, {"pages": 4.0, "label": "214.0", "spine": 28, "title": "Baltarik Military", "id": "214.0", "type": 2}, {"pages": 17.0, "label": "252.0", "spine": 34, "title": "Baltarik Laboratories", "id": "252.0", "type": 2}, {"pages": 4.0, "label": "239.0", "spine": 32, "title": "Hunting Gloves", "id": "239.0", "type": 2}, {"pages": 31.0, "label": "81.0", "spine": 4, "title": "Did something happen two months ago?", "id": "81.0", "type": 1}, {"pages": 2.0, "label": "237.0", "spine": 31, "title": "Jadu Calendar", "id": "237.0", "type": 2}, {"pages": 3.0, "label": "151.0", "spine": 18, "title": "Jadu Galaxy", "id": "151.0", "type": 2}, {"pages": 4.0, "label": "282.0", "spine": 38, "title": "A Timeline of Baltarik History", "id": "282.0", "type": 2}, {"pages": 61.0, "label": "20.0", "spine": 3, "title": "You seem to have misplaced your zarkis.", "id": "20.0", "type": 1}, {"pages": 10.0, "label": "177.0", "spine": 23, "title": "Pajar", "id": "177.0", "type": 2}, {"pages": 2.0, "label": "280.0", "spine": 37, "title": "Barkes Lookup", "id": "280.0", "type": 2}, {"pages": 13.0, "label": "224.0", "spine": 30, "title": "The Ramda Choosing", "id": "224.0", "type": 2}, {"pages": 8.0, "label": "154.0", "spine": 19, "title": "Kadas (Planet)", "id": "154.0", "type": 2}, {"pages": 3.0, "label": "174.0", "spine": 22, "title": "Sonkis", "id": "174.0", "type": 2}, {"pages": 5.0, "label": "124.0", "spine": 12, "title": "Trash", "id": "124.0", "type": 2}, {"pages": 9.0, "label": "205.0", "spine": 27, "title": "Jauni", "id": "205.0", "type": 2}, {"pages": 11.0, "label": "187.0", "spine": 24, "title": "Ramda", "id": "187.0", "type": 2}, {"pages": 1.0, "label": "112.0", "spine": 5, "title": "Thank you", "id": "112.0", "type": 2}, {"pages": 5.0, "label": "275.0", "spine": 36, "title": "The Great Peace Organization", "id": "275.0", "type": 2}, {"pages": 3.0, "label": "121.0", "spine": 11, "title": "Shmee Bogart", "id": "121.0", "type": 2}, {"pages": 3.0, "label": "202.0", "spine": 26, "title": "Portisk", "id": "202.0", "type": 2}, {"pages": 3.0, "label": "117.0", "spine": 9, "title": "Respect and communication", "id": "117.0", "type": 2}, {"pages": 1.0, "label": "116.0", "spine": 8, "title": "Destruction with Ta", "id": "116.0", "type": 2}, {"pages": 4.0, "label": "143.0", "spine": 16, "title": "Kadas (People)", "id": "143.0", "type": 2}, {"pages": 2.0, "label": "1", "spine": 1, "title": "Pajar", "id": "1", "type": 1}, {"pages": 6.0, "label": "269.0", "spine": 35, "title": "Baltarik Social Hierarchy", "id": "269.0", "type": 2}, {"pages": 9.0, "label": "243.0", "spine": 33, "title": "Kantisk Energy", "id": "243.0", "type": 2}, {"pages": 2.0, "label": "114.0", "spine": 7, "title": "Hako's dares", "id": "114.0", "type": 2}, {"pages": 5.0, "label": "129.0", "spine": 13, "title": "Dante Klerik", "id": "129.0", "type": 2}, {"pages": 1.0, "label": "142.0", "spine": 15, "title": "Kadas(Disambiguation)", "id": "142.0", "type": 2}, {"pages": 8.0, "label": "134.0", "spine": 14, "title": "Jigo Kadas", "id": "134.0", "type": 2}, {"pages": 5.0, "label": "169.0", "spine": 21, "title": "Zarkis", "id": "169.0", "type": 2}]}`;
+        dataLoaded(JSON.parse(test), 1, -3);
+    </script>
+}
+
+<div class="wrapper">
+
+    <div id="map"></div>
+
+    <div id="content">
+        <button type="button" id="sidebarCollapse" class="btn btn-info">
+            <i class="fas fa-align-left"></i>
+            <span>Toggle Map</span>
+        </button>
+
+        @if (Model.DisplayTitle)
+        {
+            <h2>
+                @Html.DisplayFor(model => model.Title)
+            </h2>
+        }
+
+        @foreach (var item in Model.Sections)
+        {
+            if (item.DisplayTitle)
+            {
+                <h3>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </h3>
+            }
+
+            <p>
+                @Html.Raw(item.Text)
+            </p>
+        }
+    </div>
 </div>

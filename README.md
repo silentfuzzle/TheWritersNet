@@ -12,23 +12,17 @@
 * Add Existing sections to Page needs to display the actual section titles rather than "Title"
 * Handle html tags in text fields gracefully
 * Handle edge cases in markdown mistakes
-* - bulleted * lists
-* 1 numbered lists
-* #header 1
-* ##header 2
-* ###header 3
-* ####header 4
-* #####header 5
+* Prevent users from adding links to internal pages that don't belong to their website
+* Need to display map and button to display map in some sort of popup
 
 ### Core Website Functionality
-* Add ability for users to add headers; bold text; italic text; struckthrough text; centered, left, or right aligned text; and ordered and unordered lists to section text
-* Add ability for users to add links between website pages to section text
 * Display Adventurous Reader map when user is viewing pages
 * Store master Adventurous Reader map JSON in the database
 * Add links to Adventurous Reader map when user navigates between pages
 * Store user progress map JSON in the database
 
 ### Nice to Have Website Functionality
+* Add ability for users to add bulleted lists, numbered lists, struckthrough text, and centered, left, or right aligned text
 * Add ability for users to create tables
 * Add ability for users to add images via url
 * Add ability for users to place sections side by side with bootstrap

@@ -202,6 +202,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MarkdownConverter.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DropDownGenerator.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -261,6 +262,13 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\map\crumb.js" />
+    <Content Include="Scripts\map\d3.v3.min.js" />
+    <Content Include="Scripts\map\double_linked_nodes.js" />
+    <Content Include="Scripts\map\historic_links.js" />
+    <Content Include="Scripts\map\link_colorer.js" />
+    <Content Include="Scripts\map\map_renderer.js" />
+    <Content Include="Scripts\map\network_node.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
