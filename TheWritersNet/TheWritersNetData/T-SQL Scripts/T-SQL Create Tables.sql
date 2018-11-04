@@ -82,6 +82,14 @@ CREATE TABLE WebsiteData.PageSection
 );
 
 USE TheWritersNetDB;
+CREATE TABLE WebsiteData.SectionLink
+(
+	SectionLinkID int NOT NULL IDENTITY PRIMARY KEY,
+	SectionID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Section (SectionID),
+	PageID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.[Page] (PageID)
+);
+
+USE TheWritersNetDB;
 CREATE TABLE WebsiteData.WebsitePage
 (
 	WebsiteID int NOT NULL FOREIGN KEY REFERENCES WebsiteData.Website (WebsiteID),
@@ -106,6 +114,15 @@ CREATE TABLE WebsiteData.WebsitePermission
 	WebsiteID int NOT NULL REFERENCES WebsiteData.Website (WebsiteID),
 	UserID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
 	AbilityID int NOT NULL REFERENCES WebsiteData.Ability (AbilityID)
+);
+
+USE TheWritersNetDB;
+CREATE TABLE WebsiteData.WebsiteUser
+(
+	WebsiteID int NOT NULL REFERENCES WebsiteData.Website (WebsiteID),
+	UserID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
+	Map nvarchar(MAX),
+	History nvarchar(MAX)
 );
 
 USE TheWritersNetDB;

@@ -112,6 +112,14 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Section Links
+
+        void MergeSectionLinks(List<SectionLinkModel> sections);
+
+        void InsertSectionLinks(List<SectionLinkModel> sections);
+
+        #endregion
+
         #region Sections
 
         void InsertSection(SectionModel section);

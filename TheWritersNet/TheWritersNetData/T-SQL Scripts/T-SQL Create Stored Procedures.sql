@@ -377,6 +377,11 @@ CREATE PROCEDURE WebsiteData.spWebsite_Delete
 AS
 	SET NOCOUNT ON;
 
+	DELETE SectionLink
+	FROM WebsiteData.SectionLink
+	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = SectionLink.PageID AND WebsitePage.WebsiteID = @WebsiteID
+	WHERE SectionLink.PageID = WebsitePage.PageID;
+
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	INNER JOIN WebsiteData.WebsitePage ON WebsitePage.PageID = PageSection.PageID
@@ -591,6 +596,35 @@ AS
 	GROUP BY Section.SectionID, Section.Title, PageSection.Position, PageSection.DisplayTitle;
 GO
 
+CREATE PROCEDURE WebsiteData.spSectionLink_Insert
+	@SectionID int, @PageID int
+AS
+	SET NOCOUNT ON;
+	
+	INSERT INTO WebsiteData.SectionLink (SectionID, PageID)
+	VALUES(@SectionID, @PageID);
+GO
+
+CREATE PROCEDURE WebsiteData.spSectionLink_Delete
+	@SectionLinkID int
+AS
+	SET NOCOUNT ON;
+	
+	DELETE SectionLink
+	FROM WebsiteData.SectionLink
+	WHERE SectionLink.SectionLinkID = @SectionLinkID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSectionLink_SelectForSection
+	@SectionID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT SectionLink.SectionLinkID, SectionLink.SectionID, SectionLink.PageID
+	FROM WebsiteData.SectionLink
+	WHERE SectionLink.SectionID = @SectionID;
+GO
+
 CREATE PROCEDURE WebsiteData.spSection_Insert
 	@PageID int, @Title nvarchar(100), @Text nvarchar(max), @Position nvarchar(500), @DisplayTitle bit
 AS
@@ -621,6 +655,10 @@ CREATE PROCEDURE WebsiteData.spSection_Delete
 	@SectionID int
 AS
 	SET NOCOUNT ON;
+
+	DELETE SectionLink
+	FROM WebsiteData.SectionLink
+	WHERE SectionLink.SectionID = @SectionID;
 	
 	DELETE PageSection
 	FROM WebsiteData.PageSection

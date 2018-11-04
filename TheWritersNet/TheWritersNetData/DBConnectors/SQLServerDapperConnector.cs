@@ -394,6 +394,64 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Section Links
+
+        public void MergeSectionLinks(List<SectionLinkModel> sections)
+        {
+            List<SectionLinkModel> tempSections = SelectSectionLinks(sections[0].SectionID);
+            List<SectionLinkModel> removeSections = new List<SectionLinkModel>();
+            Dictionary<int, SectionLinkModel> existingSections = new Dictionary<int, SectionLinkModel>();
+            foreach (SectionLinkModel link in tempSections)
+            {
+                if (existingSections.ContainsKey(link.PageID))
+                    removeSections.Add(link);
+                else
+                    existingSections.Add(link.PageID, link);
+            }
+
+            List<SectionLinkModel> insertSections = new List<SectionLinkModel>();
+            foreach (SectionLinkModel link in sections)
+            {
+                if (!existingSections.ContainsKey(link.PageID))
+                {
+                    insertSections.Add(link);
+                    existingSections.Remove(link.PageID);
+                }
+            }
+
+            foreach (SectionLinkModel link in existingSections.Values)
+                removeSections.Add(link);
+
+            InsertSectionLinks(insertSections);
+            DeleteSectionLinks(removeSections);
+        }
+
+        public void InsertSectionLinks(List<SectionLinkModel> sections)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSectionLink_Insert @SectionID, @PageID", sections);
+            }
+        }
+
+        private void DeleteSectionLinks(List<SectionLinkModel> sections)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spSectionLink_Delete @SectionLinkID", sections);
+            }
+        }
+
+        private List<SectionLinkModel> SelectSectionLinks(int sectionID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<SectionLinkModel>("WebsiteData.spSectionLink_SelectForSection @SectionID", new { SectionID = sectionID }).ToList();
+            }
+        }
+
+        #endregion
+
         #region Sections
 
         public void InsertSection(SectionModel section)

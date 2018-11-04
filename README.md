@@ -13,7 +13,8 @@
 * Handle html tags in text fields gracefully
 * Handle edge cases in markdown mistakes
 * Prevent users from adding links to internal pages that don't belong to their website
-* Need to display map and button to display map in some sort of popup
+* Need to display map button in some sort of popup
+* Need to return SectionID when a section is inserted into the database
 
 ### Core Website Functionality
 * Display Adventurous Reader map when user is viewing pages

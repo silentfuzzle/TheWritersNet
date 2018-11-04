@@ -3,7 +3,49 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - The Writer's Net</title>
+    <style>
+        #map-wrapper {
+            z-index: 1000;
+            position: fixed;
+            left: 500px;
+            width: 0;
+            height: 100%;
+            margin-left: -500px;
+            overflow-y: hidden;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        #wrapper.toggled #map-wrapper {
+            width: 500px;
+        }
+
+        #wrapper {
+            padding-left: 0;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+            #wrapper.toggled {
+                padding-left: 500px;
+            }
+
+        #content-wrapper {
+            width: 100%;
+            position: absolute;
+            padding: 15px;
+        }
+
+        #wrapper.toggled #content-wrapper {
+            position: absolute;
+            margin-right: -500px;
+        }
+    </style>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("Styles", required: false)
@@ -30,12 +72,17 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - The Writer's Net</p>
-        </footer>
+    <div id="wrapper">
+        <div id="map-wrapper"></div>
+        <div id="content-wrapper">
+            <div class="container body-content">
+                @RenderBody()
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - The Writer's Net</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
     @Scripts.Render("~/bundles/jquery")

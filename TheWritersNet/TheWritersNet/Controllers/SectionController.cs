@@ -72,6 +72,9 @@ namespace TheWritersNet.Controllers
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.InsertSection(page);
 
+            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, page.SectionID);
+            db.InsertSectionLinks(links);
+
             return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
         }
 
@@ -92,6 +95,9 @@ namespace TheWritersNet.Controllers
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.UpdateSection(page);
             db.UpdatePosition(page);
+
+            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, page.SectionID);
+            db.InsertSectionLinks(links);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
         }

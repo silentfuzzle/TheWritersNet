@@ -48,6 +48,7 @@
     <Compile Include="DBConnectors\SQLServerDapperConnector.cs" />
     <Compile Include="Models\DBPageModel.cs" />
     <Compile Include="Models\PermissionModel.cs" />
+    <Compile Include="Models\SectionLinkModel.cs" />
     <Compile Include="Models\SectionModel.cs" />
     <Compile Include="Models\SocialMediaModel.cs" />
     <Compile Include="Models\TagModel.cs" />

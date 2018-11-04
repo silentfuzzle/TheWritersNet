@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using TheWritersNetData.Models;
 
 namespace TheWritersNet
 {
@@ -10,6 +11,73 @@ namespace TheWritersNet
         public static string MarkdownToHTML(string markdown)
         {
             return HyperlinkToHTML(NewlineToHTML(HashtagToHTML(FormattingToHTML(markdown))));
+        }
+
+        public static List<SectionLinkModel> FindInternalLinks(string markdown, int sectionID)
+        {
+            List<SectionLinkModel> links = new List<SectionLinkModel>();
+
+            //TODO: This is copied from HyperlinkToHTML
+            int index = 0;
+            int lastIndex = 0;
+            string nextSymbol = "[";
+            char hyperlinkType = 'x';
+            int[] brackets = new int[2];
+
+            while (index < markdown.Length)
+            {
+                index = markdown.IndexOf(nextSymbol, index);
+                if (index == -1)
+                {
+                    if (nextSymbol == "[")
+                        index = markdown.Length;
+                    else
+                    {
+                        nextSymbol = "[";
+                        index = lastIndex;
+                    }
+                }
+                else
+                {
+                    if (nextSymbol == "[")
+                    {
+                        nextSymbol = "]";
+                        brackets[0] = index;
+                        lastIndex = index + 1;
+
+                        if (index > 0)
+                            hyperlinkType = markdown[index - 1];
+                    }
+                    else if (nextSymbol == "]")
+                    {
+                        if (index < markdown.Length - 1 && markdown[index + 1] == '(')
+                        {
+                            nextSymbol = ")";
+                            brackets[1] = index;
+                        }
+                        else
+                        {
+                            nextSymbol = "[";
+                            index = lastIndex;
+                        }
+                    }
+                    else
+                    {
+                        string hyperlink = markdown.Substring(brackets[1] + 2, index - (brackets[1] + 2));
+                        if (hyperlinkType == '?')
+                        {
+                            int pageID;
+                            bool success = int.TryParse(hyperlink, out pageID);
+                            if (success)
+                                links.Add(new SectionLinkModel() { PageID = pageID, SectionID = sectionID });
+                        }
+
+                        nextSymbol = "[";
+                    }
+                }
+            }
+
+            return links;
         }
 
         private static string HashtagToHTML(string markdown)

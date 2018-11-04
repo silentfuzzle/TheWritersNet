@@ -60,7 +60,7 @@ var allVisible = false;
 var layout = FORCE_DIRECTED;
   
 // Set the viewer window to fill the TOC panel
-var svg = d3.select("#map")
+var svg = d3.select("#map-wrapper")
     .append("svg")
       .attr({
         "width": "100%",
