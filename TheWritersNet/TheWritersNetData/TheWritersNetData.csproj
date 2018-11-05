@@ -47,6 +47,7 @@
     <Compile Include="DBConnectors\IDBConnector.cs" />
     <Compile Include="DBConnectors\SQLServerDapperConnector.cs" />
     <Compile Include="Models\DBPageModel.cs" />
+    <Compile Include="Models\LinkModel.cs" />
     <Compile Include="Models\PermissionModel.cs" />
     <Compile Include="Models\SectionLinkModel.cs" />
     <Compile Include="Models\SectionModel.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\Websites\NewWebsiteModel.cs" />
     <Compile Include="Models\Websites\UserWebsiteModel.cs" />
+    <Compile Include="Models\WebsiteUserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

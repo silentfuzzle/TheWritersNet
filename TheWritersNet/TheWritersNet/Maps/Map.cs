@@ -7,10 +7,7 @@ namespace TheWritersNet
 {
     public class Map
     {
-        public List<Node> graph = new List<Node>();
-        public bool multigraph;
-        public bool directed;
-        public List<Link> links;
-        public List<Node> nodes;
+        public List<Link> links = new List<Link>();
+        public List<Node> nodes = new List<Node>();
     }
 }

@@ -121,6 +121,7 @@ CREATE TABLE WebsiteData.WebsiteUser
 (
 	WebsiteID int NOT NULL REFERENCES WebsiteData.Website (WebsiteID),
 	UserID int NOT NULL REFERENCES WebsiteData.[User] (UserID),
+	Dirty bit,
 	Map nvarchar(MAX),
 	History nvarchar(MAX)
 );

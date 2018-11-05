@@ -233,6 +233,38 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Website Users
+
+        public void InsertWebsiteUser(WebsiteUserModel websiteUser)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spWebsiteUser_Insert @Map, @History, @WebsiteID, @LoginID", websiteUser);
+            }
+        }
+
+        public void UpdateWebsiteUser(WebsiteUserModel websiteUser)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                connection.Execute("WebsiteData.spWebsiteUser_Update @Map, @History, @WebsiteID, @LoginID", websiteUser);
+            }
+        }
+
+        public WebsiteUserModel SelectWebsiteUser(int websiteID, string loginID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<WebsiteUserModel> userInfo = connection.Query<WebsiteUserModel>("WebsiteData.spWebsiteUser_Select @WebsiteID, @LoginID", new { WebsiteID = websiteID, LoginID = loginID }).ToList();
+                if (userInfo.Count() > 0)
+                    return userInfo.First();
+            }
+
+            return null;
+        }
+
+        #endregion
+
         #region Websites
 
         public void InsertWebsite(NewWebsiteModel website)
@@ -409,20 +441,22 @@ namespace TheWritersNetData.DBConnectors
                     existingSections.Add(link.PageID, link);
             }
 
-            List<SectionLinkModel> insertSections = new List<SectionLinkModel>();
+            Dictionary<int, SectionLinkModel> insertSections = new Dictionary<int, SectionLinkModel>();
             foreach (SectionLinkModel link in sections)
             {
-                if (!existingSections.ContainsKey(link.PageID))
-                {
-                    insertSections.Add(link);
-                    existingSections.Remove(link.PageID);
-                }
+                if (!insertSections.ContainsKey(link.PageID))
+                    insertSections.Add(link.PageID, link);
             }
 
             foreach (SectionLinkModel link in existingSections.Values)
-                removeSections.Add(link);
-
-            InsertSectionLinks(insertSections);
+            {
+                if (insertSections.ContainsKey(link.PageID))
+                    insertSections.Remove(link.PageID);
+                else
+                    removeSections.Add(link);
+            }
+            
+            InsertSectionLinks(insertSections.Values.ToList());
             DeleteSectionLinks(removeSections);
         }
 
@@ -442,6 +476,15 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public bool SelectSectionLinks(LinkModel link)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<LinkModel> links = connection.Query<LinkModel>("WebsiteData.spSectionLink_Select @StartPage, @EndPage", link).ToList();
+                return (links.Count() > 0);
+            }
+        }
+
         private List<SectionLinkModel> SelectSectionLinks(int sectionID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
@@ -450,17 +493,34 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public List<LinkModel> SelectWebsiteLinks(int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                return connection.Query<LinkModel>("WebsiteData.spSectionLink_SelectForWebsite @WebsiteID", new { WebsiteID = websiteID }).ToList();
+            }
+        }
+
         #endregion
 
         #region Sections
 
-        public void InsertSection(SectionModel section)
+        public int InsertSection(SectionModel section)
         {
             List<SectionModel> sections = new List<SectionModel>() { section };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                connection.Execute("WebsiteData.spSection_Insert @PageID, @Title, @Text, @Position, @DisplayTitle", sections);
+                var p = new DynamicParameters();
+                p.Add("PageID", section.PageID);
+                p.Add("Title", section.Title);
+                p.Add("Text", section.Text);
+                p.Add("Position", section.Position);
+                p.Add("DisplayTitle", section.DisplayTitle);
+                p.Add("SectionID", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                connection.Query<int>("WebsiteData.spSection_Insert", p, commandType: CommandType.StoredProcedure);
+                return p.Get<int>("SectionID");
             }
         }
 

@@ -68,6 +68,16 @@ namespace TheWritersNetData.DBConnectors
 
         #endregion
 
+        #region Website Users
+
+        void InsertWebsiteUser(WebsiteUserModel websiteUser);
+
+        void UpdateWebsiteUser(WebsiteUserModel websiteUser);
+
+        WebsiteUserModel SelectWebsiteUser(int websiteID, string loginID);
+
+        #endregion
+
         #region Websites
 
         void InsertWebsite(NewWebsiteModel website);
@@ -118,11 +128,15 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertSectionLinks(List<SectionLinkModel> sections);
 
+        bool SelectSectionLinks(LinkModel link);
+
+        List<LinkModel> SelectWebsiteLinks(int websiteID);
+
         #endregion
 
         #region Sections
 
-        void InsertSection(SectionModel section);
+        int InsertSection(SectionModel section);
 
         void UpdateSection(SectionModel section);
 

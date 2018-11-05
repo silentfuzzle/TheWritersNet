@@ -8,7 +8,9 @@
 
 @using (Html.BeginForm())
 {
-    @Html.EditorForModel()
+    <table>
+        @Html.EditorForModel()
+    </table>
     <button type="submit">OK</button>
 }
 @Html.ActionLink("Back to Page", "EditFromID", "Page", new { pageID = Model[0].PageID }, new { })

@@ -466,6 +466,55 @@ AS
 	WHERE Website.VisibilityID = 1;
 GO
 
+CREATE PROCEDURE WebsiteData.spWebsiteUser_Insert
+	@Map nvarchar(MAX), @History nvarchar(MAX), @WebsiteID int, @LoginID nvarchar(50)
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @UserID int;
+	EXEC WebsiteData.spUser_SelectID @LoginID, @UserID OUTPUT;
+	
+	INSERT INTO WebsiteData.WebsiteUser (WebsiteID, UserID, Dirty, Map, History)
+	VALUES (@WebsiteID, @UserID, 0, @Map, @History);
+GO
+
+CREATE PROCEDURE WebsiteData.spWebsiteUser_Update
+	@Map nvarchar(MAX), @History nvarchar(MAX), @WebsiteID int, @LoginID nvarchar(50)
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @UserID int;
+	EXEC WebsiteData.spUser_SelectID @LoginID, @UserID OUTPUT;
+	
+	UPDATE WebsiteData.WebsiteUser
+	SET WebsiteUser.Map = @Map, WebsiteUser.History = @History, WebsiteUser.Dirty = 0
+	WHERE WebsiteUser.WebsiteID = @WebsiteID AND WebsiteUser.UserID = @UserID;
+GO
+
+CREATE PROCEDURE WebsiteData.spWebsiteUser_UpdateDirty
+	@WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	UPDATE WebsiteData.WebsiteUser
+	SET WebsiteUser.Dirty = 1
+	WHERE WebsiteUser.WebsiteID = @WebsiteID;
+GO
+
+CREATE PROCEDURE WebsiteData.spWebsiteUser_Select
+	@WebsiteID int, @LoginID nvarchar(50)
+AS
+	SET NOCOUNT ON;
+
+	DECLARE @UserID int;
+
+	EXEC WebsiteData.spUser_SelectID @LoginID, @UserID OUTPUT;
+
+	SELECT WebsiteUser.History, WebsiteUser.Map, WebsiteUser.Dirty
+	FROM WebsiteData.WebsiteUser
+	WHERE WebsiteUser.UserID = @UserID AND WebsiteUser.WebsiteID = @WebsiteID;
+GO
+
 CREATE PROCEDURE WebsiteData.spPage_Insert
 	@WebsiteID int, @Title nvarchar(100), @DisplayTitle bit, @HomePage bit
 AS
@@ -480,7 +529,8 @@ AS
 	INSERT INTO WebsiteData.WebsitePage (WebsiteID, PageID)
 	VALUES (@WebsiteID, @PageID);
 
-	EXEC WebsiteData.spWebsite_UpdateHomePage @WebsiteID, @PageID, @HomePage; 
+	EXEC WebsiteData.spWebsite_UpdateHomePage @WebsiteID, @PageID, @HomePage;
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Update
@@ -491,6 +541,11 @@ AS
 	UPDATE WebsiteData.[Page]
 	SET [Page].Title = @Title, [Page].DisplayTitle = @DisplayTitle
 	WHERE [Page].PageID = @PageID;
+	
+	DECLARE @WebsiteID int
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_Delete
@@ -499,10 +554,10 @@ AS
 	SET NOCOUNT ON;
 
 	DECLARE @WebsiteID int
-
 	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 
 	EXEC WebsiteData.spWebsite_UpdateHomePage @WebsiteID, @PageID, 0;
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 
 	DELETE PageSection
 	FROM WebsiteData.PageSection
@@ -545,6 +600,14 @@ CREATE PROCEDURE WebsiteData.spPosition_Update
 	@SectionID int, @PageID int, @Position nvarchar(500), @DisplayTitle bit
 AS
 	SET NOCOUNT ON;
+
+	IF NOT EXISTS (SELECT PageSection.Position FROM WebsiteData.PageSection WHERE PageID = @PageID AND SectionID = @SectionID AND Position = @Position)
+		BEGIN
+			DECLARE @WebsiteID int
+			SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+			EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
+		END
 	
 	UPDATE WebsiteData.PageSection
 	SET PageSection.Position = @Position, PageSection.DisplayTitle = @DisplayTitle
@@ -560,6 +623,11 @@ AS
 		BEGIN
 			INSERT INTO WebsiteData.PageSection (PageID, SectionID, Position, DisplayTitle)
 			VALUES (@PageID, @SectionID, @Position, @DisplayTitle);
+	
+			DECLARE @WebsiteID int
+			SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+			EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 		END
 	ELSE
 		BEGIN
@@ -575,6 +643,11 @@ AS
 	DELETE PageSection
 	FROM WebsiteData.PageSection
 	WHERE PageSection.PageID = @PageID AND PageSection.SectionID = @SectionID;
+	
+	DECLARE @WebsiteID int
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPosition_SelectForPage
@@ -603,6 +676,11 @@ AS
 	
 	INSERT INTO WebsiteData.SectionLink (SectionID, PageID)
 	VALUES(@SectionID, @PageID);
+	
+	DECLARE @WebsiteID int;
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spSectionLink_Delete
@@ -610,9 +688,28 @@ CREATE PROCEDURE WebsiteData.spSectionLink_Delete
 AS
 	SET NOCOUNT ON;
 	
+	DECLARE @WebsiteID int;
+	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID 
+					  FROM WebsiteData.WebsitePage 
+					  INNER JOIN WebsiteData.SectionLink ON SectionLink.PageID = WebsitePage.PageID 
+					  WHERE SectionLink.SectionLinkID = @SectionLinkID);
+	
 	DELETE SectionLink
 	FROM WebsiteData.SectionLink
 	WHERE SectionLink.SectionLinkID = @SectionLinkID;
+
+	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
+GO
+
+CREATE PROCEDURE WebsiteData.spSectionLink_Select
+	@StartPage int, @EndPage int
+AS
+	SET NOCOUNT ON;
+
+	SELECT PageSection.PageID AS StartPage, SectionLink.PageID AS EndPage 
+	FROM WebsiteData.SectionLink
+	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = SectionLink.SectionID
+	WHERE PageSection.PageID = @StartPage AND SectionLink.PageID = @EndPage;
 GO
 
 CREATE PROCEDURE WebsiteData.spSectionLink_SelectForSection
@@ -625,13 +722,25 @@ AS
 	WHERE SectionLink.SectionID = @SectionID;
 GO
 
-CREATE PROCEDURE WebsiteData.spSection_Insert
-	@PageID int, @Title nvarchar(100), @Text nvarchar(max), @Position nvarchar(500), @DisplayTitle bit
+CREATE PROCEDURE WebsiteData.spSectionLink_SelectForWebsite
+	@WebsiteID int
 AS
 	SET NOCOUNT ON;
 	
-	DECLARE @SectionID int, @WebsiteID int;
+	SELECT DISTINCT PageSection.PageID AS StartPage, SectionLink.PageID AS EndPage
+	FROM WebsiteData.SectionLink
+	INNER JOIN WebsiteData.PageSection ON SectionLink.SectionID = PageSection.SectionID
+	INNER JOIN WebsiteData.WebsitePage ON PageSection.PageID = WebsitePage.PageID
+	WHERE WebsitePage.WebsiteID = @WebsiteID;
+GO
 
+CREATE PROCEDURE WebsiteData.spSection_Insert
+	@PageID int, @Title nvarchar(100), @Text nvarchar(max), @Position nvarchar(500), @DisplayTitle bit,
+	@SectionID int OUTPUT
+AS
+	SET NOCOUNT ON;
+	
+	DECLARE @WebsiteID int;
 	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 	
 	INSERT INTO WebsiteData.Section (WebsiteID, Title, [Text])

@@ -70,9 +70,9 @@ namespace TheWritersNet.Controllers
         public ActionResult Create(SectionModel page)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            db.InsertSection(page);
+            int index = db.InsertSection(page);
 
-            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, page.SectionID);
+            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, index);
             db.InsertSectionLinks(links);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
@@ -97,7 +97,7 @@ namespace TheWritersNet.Controllers
             db.UpdatePosition(page);
 
             List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, page.SectionID);
-            db.InsertSectionLinks(links);
+            db.MergeSectionLinks(links);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
         }
@@ -117,9 +117,19 @@ namespace TheWritersNet.Controllers
         public ActionResult Delete(SectionModel section)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            db.DeleteSectionFromPage(section.SectionID, section.PageID);
+            db.DeleteSection(section.SectionID);
 
             return RedirectToAction("EditFromID", "Page", new { pageID = section.PageID });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Remove(int sectionID, int pageID)
+        {
+            IDBConnector db = DBConnectorFactory.GetDBConnector();
+            db.DeleteSectionFromPage(sectionID, pageID);
+            
+            return RedirectToAction("EditFromID", "Page", new { pageID });
         }
     }
 }

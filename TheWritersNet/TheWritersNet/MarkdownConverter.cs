@@ -169,7 +169,7 @@ namespace TheWritersNet
                         {
                             markdown = markdown.Insert(brackets[1], "</a>");
                             markdown = markdown.Remove(brackets[0] - 1, 2);
-                            markdown = markdown.Insert(brackets[0] - 1, "<a href=\"/Page/Display?pageID=" + hyperlink + "\">");
+                            markdown = markdown.Insert(brackets[0] - 1, "<a href=\"javascript:openPage(" + hyperlink + ")\">");
                         }
                         else if (hyperlinkType == '!')
                         {

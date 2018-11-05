@@ -1,13 +1,17 @@
 ﻿@model TheWritersNetData.Models.SectionModel
 
-<div>
+<tr>
     @Html.HiddenFor(x => x.SectionID)
     @Html.HiddenFor(x => x.PageID)
-    @Html.LabelFor(x => x.Title)
-    @Html.LabelFor(x => x.IsSelected, "Include in Page")
-    @Html.CheckBoxFor(x => x.IsSelected)
-    @Html.LabelFor(x => x.DisplayTitle)
-    @Html.CheckBoxFor(x => x.DisplayTitle)
-    @Html.TextBoxFor(x => x.Position)
-</div>
+    <td>@Model.Title</td>
+    <td>
+        @Html.LabelFor(x => x.IsSelected, "Include in Page")
+        @Html.CheckBoxFor(x => x.IsSelected)
+    </td>
+    <td>
+        @Html.LabelFor(x => x.DisplayTitle)
+        @Html.CheckBoxFor(x => x.DisplayTitle)
+    </td>
+    <td>@Html.TextBoxFor(x => x.Position)</td>
+</tr>
 

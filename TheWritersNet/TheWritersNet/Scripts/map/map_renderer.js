@@ -969,9 +969,10 @@ function clickNode() {
     
     // Get the first page number of the section from the node that was clicked
     pageNum = d3.select(this).attr("page");
-    
-    // Call the Python code to change pages
-    container.change_page(pageNum);
+
+    // Open the page associated with this node
+    var url = "/Page/Display?pageId=" + pageNum;
+    window.location.href = url;
 }
 
 // Emphasize a node and its associated links on mouse hover

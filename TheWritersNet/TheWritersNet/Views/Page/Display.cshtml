@@ -47,6 +47,7 @@
     <script src="@Url.Content("~/Scripts/map/historic_links.js")"></script>
     <script src="@Url.Content("~/Scripts/map/link_colorer.js")"></script>
     <script src="@Url.Content("~/Scripts/map/map_renderer.js")"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -57,12 +58,12 @@
             });
 
             $.ajax({
-                url: '/Page/GetMap',
+                url: '/Map/Display',
                 type: 'POST',
                 dataType: 'json',
-                data: { order: 'Client_Call', PageID: @Model.PageID },
+                data: { order: 'Client_Call', pageID: @Model.PageID, websiteID: @Model.WebsiteID },
                 success: function (data) {
-                    dataLoaded(JSON.parse(data), 1, -3);
+                    dataLoaded(JSON.parse(data), @Model.PageID, -3);
                 },
                 error: function (data) {
                     console.log("failure");
@@ -70,6 +71,23 @@
             })
 
         });
+
+        function openPage(pageID) {
+            $.ajax({
+                url: '/Map/Update',
+                type: 'POST',
+                dataType: 'json',
+                data: { order: 'Client_Call', websiteID: @Model.WebsiteID, prevPageID: @Model.PageID, nextPageID: pageID },
+                success: function (data) {
+                    var url = "/Page/Display?pageId=" + pageID;
+                    window.location.href = url;
+                },
+                error: function (data) {
+                    console.log("failure");
+                }
+            })
+
+        }
     </script>
 }
 
@@ -98,3 +116,4 @@
         @Html.Raw(item.Text)
     </p>
 }
+@Ajax.ActionLink("Test Map", "Update", "Map", new { websiteID = Model.WebsiteID, prevPageID = Model.PageID, nextPageID = 4 }, new AjaxOptions { HttpMethod = "POST" })

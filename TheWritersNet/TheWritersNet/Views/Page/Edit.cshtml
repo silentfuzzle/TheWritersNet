@@ -4,8 +4,13 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+@section Scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
 
+<h2>Edit</h2>
 
 @using (Html.BeginForm())
 {
@@ -49,8 +54,8 @@
 
 <h4>Sections</h4>
 <p>
-    @Html.ActionLink("Create New", "Create", "Section", new { pageID = Model.PageID }, new { }) | 
-    @Html.ActionLink("Add Existing", "SelectSections", "Section", new { pageID = Model.PageID}, new { })
+    @Html.ActionLink("Create New", "Create", "Section", new { pageID = Model.PageID }, new { }) |
+    @Html.ActionLink("Add Existing", "SelectSections", "Section", new { pageID = Model.PageID }, new { })
 </p>
 <table class="table">
     <tr>
@@ -75,7 +80,8 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
                 @Html.ActionLink("View", "Display", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
-                @Html.ActionLink("Delete", "Delete", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { })
+                @Html.ActionLink("Delete", "Delete", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
+                @Ajax.ActionLink("Remove from Page", "Remove", "Section", new { sectionID = item.SectionID, pageID = Model.PageID }, new AjaxOptions { HttpMethod = "POST" })
             </td>
         </tr>
     }
@@ -85,7 +91,3 @@
 <div>
     @Html.ActionLink("Back to Website", "EditFromID", "Website", new { websiteID = Model.WebsiteID }, new { })
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
