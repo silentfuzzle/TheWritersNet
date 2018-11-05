@@ -9,7 +9,7 @@ namespace TheWritersNet
     public class Node
     {
         public string id;
-        public float spine;
+        public int spine;
         public float pages;
         public string label;
         public int type;

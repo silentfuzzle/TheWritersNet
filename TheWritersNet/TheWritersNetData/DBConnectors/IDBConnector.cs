@@ -128,7 +128,7 @@ namespace TheWritersNetData.DBConnectors
 
         void InsertSectionLinks(List<SectionLinkModel> sections);
 
-        bool SelectSectionLinks(LinkModel link);
+        List<LinkModel> SelectSectionLinks(List<LinkModel> links);
 
         List<LinkModel> SelectWebsiteLinks(int websiteID);
 

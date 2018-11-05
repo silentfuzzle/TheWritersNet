@@ -476,12 +476,16 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public bool SelectSectionLinks(LinkModel link)
+        public List<LinkModel> SelectSectionLinks(List<LinkModel> links)
         {
+            //TODO: Use temp table?
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                IEnumerable<LinkModel> links = connection.Query<LinkModel>("WebsiteData.spSectionLink_Select @StartPage, @EndPage", link).ToList();
-                return (links.Count() > 0);
+                List<LinkModel> returnLinks = new List<LinkModel>();
+                foreach (LinkModel link in links)
+                    returnLinks.AddRange(connection.Query<LinkModel>("WebsiteData.spSectionLink_Select @StartPage, @EndPage", link));
+
+                return returnLinks;
             }
         }
 
