@@ -348,6 +348,7 @@
     <Content Include="Views\SocialMedia\Create.cshtml" />
     <Content Include="Views\SocialMedia\Edit.cshtml" />
     <Content Include="Views\SocialMedia\Delete.cshtml" />
+    <Content Include="Views\Shared\_WebsiteLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

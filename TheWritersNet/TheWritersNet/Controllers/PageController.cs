@@ -29,7 +29,7 @@ namespace TheWritersNet.Controllers
             foreach (SectionModel section in page.Sections)
                 section.Text = MarkdownConverter.MarkdownToHTML(section.Text);
 
-            return View(page);
+            return View("Display", "_WebsiteLayout", page);
         }
 
         [Authorize]

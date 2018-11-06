@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNet", "TheWritersNet\TheWritersNet.csproj", "{DF35D15B-B2F4-4073-9236-B6655E33EC00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNet", "TheWritersNet\TheWritersNet.csproj", "{65802ABF-5996-46E1-B2B5-3C30F5D4BA7E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNet.Tests", "TheWritersNet.Tests\TheWritersNet.Tests.csproj", "{965AA6AB-D974-4096-AC25-8D20D8709432}"
 EndProject
@@ -15,10 +15,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DF35D15B-B2F4-4073-9236-B6655E33EC00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF35D15B-B2F4-4073-9236-B6655E33EC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF35D15B-B2F4-4073-9236-B6655E33EC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF35D15B-B2F4-4073-9236-B6655E33EC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65802ABF-5996-46E1-B2B5-3C30F5D4BA7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65802ABF-5996-46E1-B2B5-3C30F5D4BA7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65802ABF-5996-46E1-B2B5-3C30F5D4BA7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65802ABF-5996-46E1-B2B5-3C30F5D4BA7E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{965AA6AB-D974-4096-AC25-8D20D8709432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{965AA6AB-D974-4096-AC25-8D20D8709432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{965AA6AB-D974-4096-AC25-8D20D8709432}.Release|Any CPU.ActiveCfg = Release|Any CPU

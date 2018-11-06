@@ -91,11 +91,6 @@
     </script>
 }
 
-<button type="button" id="menu-toggle" class="btn btn-info">
-    <i class="fas fa-align-left"></i>
-    <span>Toggle Map</span>
-</button>
-
 @if (Model.DisplayTitle)
 {
     <h2>
@@ -116,4 +111,3 @@
         @Html.Raw(item.Text)
     </p>
 }
-@Ajax.ActionLink("Test Map", "Update", "Map", new { websiteID = Model.WebsiteID, prevPageID = Model.PageID, nextPageID = 4 }, new AjaxOptions { HttpMethod = "POST" })

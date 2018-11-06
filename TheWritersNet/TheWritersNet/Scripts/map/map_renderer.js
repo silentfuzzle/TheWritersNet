@@ -9,6 +9,7 @@
 
 var svgWidth = 500,
     svgHeight = 500;
+var mapContainer = "#map-wrapper";
 
 var textDefaultOpacity = 0;
 var textVisibleOpacity = 0.6;
@@ -60,7 +61,7 @@ var allVisible = false;
 var layout = FORCE_DIRECTED;
   
 // Set the viewer window to fill the TOC panel
-var svg = d3.select("#map-wrapper")
+var svg = d3.select(mapContainer)
     .append("svg")
       .attr({
         "width": "100%",
@@ -408,7 +409,7 @@ function wrap(text, width) {
                 .attr("x", x)
                 .attr("y", y)
                 .attr("dy", dy + "em")
-                .style("font", textDefaultSize + "px serif");
+                .attr("font-size", textDefaultSize + "px");
         while (word = words.pop()) {
             line.push(word);
             tspan.text(line.join(" "));
@@ -421,7 +422,7 @@ function wrap(text, width) {
                     .attr("x", x)
                     .attr("y", y)
                     .attr("dy", lineNumber * lineHeight + dy + "em")
-                    .style("font", textDefaultSize + "px serif")
+                    .attr("font-size", textDefaultSize + "px")
                     .text(word);
             }
         }
@@ -450,13 +451,15 @@ function animateText(nodeSVG, growing, visible) {
             textOpacity = textVisibleOpacity;
         }
     }
+
+    console.log(textSize);
     
     // Start the animation
     d3.select(nodeSVG).select("text").transition()
         .duration(750)
         .selectAll('tspan').attr("x", xOffset)
         .attr("y", 0.1)
-        .style("opacity", function(d) { 
+        .style("opacity", function (d) {
                 if (visible || growing) { 
                     return textOpacity; 
                 }
@@ -464,7 +467,7 @@ function animateText(nodeSVG, growing, visible) {
                     return d.topacity;
                 } 
             })
-        .style("font", textSize + "px serif");
+        .attr("font-size", textSize + "px");
 }
 
 // Makes the text of a node visible 
@@ -917,8 +920,8 @@ function centerLink(linkObj) {
 // y1 - the y-position stored in the node's data
 function centerNode(x1, y1) {
     // Get the width and height of the document
-    var bodyWidth = d3.select("body").style("width");
-    var bodyHeight = d3.select("body").style("height");
+    var bodyWidth = d3.select(mapContainer).style("width");
+    var bodyHeight = d3.select(mapContainer).style("height");
     bodyWidth = parseInt(bodyWidth.substring(0, bodyWidth.length - 2));
     bodyHeight = parseInt(bodyHeight.substring(0, bodyHeight.length - 2));
     
