@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNet.Tests", "TheW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNetData", "TheWritersNetData\TheWritersNetData.csproj", "{4B23D412-32CD-4457-9DD2-3B985C185FA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWritersNetLogic", "TheWritersNetLogic\TheWritersNetLogic.csproj", "{A5C8CCBC-D89A-4D42-8D62-AD6AA010DA2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{4B23D412-32CD-4457-9DD2-3B985C185FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B23D412-32CD-4457-9DD2-3B985C185FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B23D412-32CD-4457-9DD2-3B985C185FA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C8CCBC-D89A-4D42-8D62-AD6AA010DA2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C8CCBC-D89A-4D42-8D62-AD6AA010DA2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C8CCBC-D89A-4D42-8D62-AD6AA010DA2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C8CCBC-D89A-4D42-8D62-AD6AA010DA2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

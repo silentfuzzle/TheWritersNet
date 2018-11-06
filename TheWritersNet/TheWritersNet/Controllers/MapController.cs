@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 using Microsoft.AspNet.Identity;
 using TheWritersNetData.DBConnectors;
 using TheWritersNetData.Models;
+using TheWritersNetLogic;
 
 namespace TheWritersNet.Controllers
 {

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using TheWritersNet.Models;
 using TheWritersNetData.DBConnectors;
 using TheWritersNetData.Models;
+using TheWritersNetLogic;
 
 namespace TheWritersNet.Controllers
 {

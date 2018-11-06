@@ -203,9 +203,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Maps\Link.cs" />
-    <Compile Include="Maps\Map.cs" />
-    <Compile Include="MarkdownConverter.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DropDownGenerator.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -213,7 +210,6 @@
     <Compile Include="Models\PageModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\WebsiteModel.cs" />
-    <Compile Include="Maps\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -369,6 +365,10 @@
     <ProjectReference Include="..\TheWritersNetData\TheWritersNetData.csproj">
       <Project>{4b23d412-32cd-4457-9dd2-3b985c185fa9}</Project>
       <Name>TheWritersNetData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TWNLogic\TheWritersNetLogic.csproj">
+      <Project>{a5c8ccbc-d89a-4d42-8d62-ad6aa010da2d}</Project>
+      <Name>TheWritersNetLogic</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

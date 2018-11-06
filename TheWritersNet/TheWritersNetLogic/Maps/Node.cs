@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 
-namespace TheWritersNet
+namespace TheWritersNetLogic
 {
     public class Node
     {
