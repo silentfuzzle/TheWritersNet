@@ -1,4 +1,4 @@
-﻿@model TheWritersNetData.Models.SectionModel
+﻿@model TheWritersNet.Models.SectionModel
 
 @{
     ViewBag.Title = "Edit";
@@ -12,7 +12,7 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>SectionModel</h4>
+        <h4>Section</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PageID)

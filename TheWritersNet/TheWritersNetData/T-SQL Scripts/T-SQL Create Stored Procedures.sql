@@ -706,7 +706,7 @@ CREATE PROCEDURE WebsiteData.spSectionLink_Select
 AS
 	SET NOCOUNT ON;
 
-	SELECT PageSection.PageID AS StartPage, SectionLink.PageID AS EndPage 
+	SELECT DISTINCT PageSection.PageID AS StartPage, SectionLink.PageID AS EndPage 
 	FROM WebsiteData.SectionLink
 	INNER JOIN WebsiteData.PageSection ON PageSection.SectionID = SectionLink.SectionID
 	WHERE PageSection.PageID = @StartPage AND SectionLink.PageID = @EndPage;

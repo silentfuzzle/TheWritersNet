@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TheWritersNet.Models;
 using TheWritersNetData.Models;
 using TheWritersNetData.DBConnectors;
 using TheWritersNetLogic;
@@ -21,7 +22,7 @@ namespace TheWritersNet.Controllers
         public ActionResult SelectSections(int pageID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            List<SectionModel> sections = db.SelectPagePositions(pageID);
+            List<DBSectionModel> sections = db.SelectPagePositions(pageID);
             sections[0].PageID = pageID;
 
             return View(sections);
@@ -29,11 +30,11 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult SelectSections(List<SectionModel> sections)
+        public ActionResult SelectSections(List<DBSectionModel> sections)
         {
-            List<SectionModel> removePositions = new List<SectionModel>();
-            List<SectionModel> addPositions = new List<SectionModel>();
-            foreach (SectionModel section in sections)
+            List<DBSectionModel> removePositions = new List<DBSectionModel>();
+            List<DBSectionModel> addPositions = new List<DBSectionModel>();
+            foreach (DBSectionModel section in sections)
             {
                 section.PageID = sections[0].PageID;
                 if (section.IsSelected)
@@ -53,7 +54,7 @@ namespace TheWritersNet.Controllers
         public ActionResult Display(int pageID, int sectionID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            SectionModel section = db.SelectSection(sectionID);
+            DBSectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
             section.Text = MarkdownConverter.MarkdownToHTML(section.Text);
 
@@ -68,46 +69,57 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Create(SectionModel page)
+        public ActionResult Create(SectionModel section)
         {
-            IDBConnector db = DBConnectorFactory.GetDBConnector();
-            int index = db.InsertSection(page);
+            if (ModelState.IsValid)
+            {
+                IDBConnector db = DBConnectorFactory.GetDBConnector();
+                int index = db.InsertSection(ConvertSectionModel(section));
 
-            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, index);
-            db.InsertSectionLinks(links);
+                List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(section.Text, index);
+                db.InsertSectionLinks(links);
 
-            return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
+                return RedirectToAction("EditFromID", "Page", new { pageID = section.PageID });
+            }
+
+            return View(section);
         }
 
         [Authorize]
         public ActionResult Edit(int pageID, int sectionID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            SectionModel section = db.SelectSection(sectionID);
+            DBSectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
 
-            return View(section);
+            return View(ConvertSectionModel(section));
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Edit(SectionModel page)
+        public ActionResult Edit(SectionModel section)
         {
-            IDBConnector db = DBConnectorFactory.GetDBConnector();
-            db.UpdateSection(page);
-            db.UpdatePosition(page);
+            if (ModelState.IsValid)
+            {
+                IDBConnector db = DBConnectorFactory.GetDBConnector();
+                DBSectionModel dbSection = ConvertSectionModel(section);
+                db.UpdateSection(dbSection);
+                db.UpdatePosition(dbSection);
 
-            List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(page.Text, page.SectionID);
-            db.MergeSectionLinks(links);
+                List<SectionLinkModel> links = MarkdownConverter.FindInternalLinks(section.Text, section.SectionID);
+                db.MergeSectionLinks(links, section.SectionID);
 
-            return RedirectToAction("EditFromID", "Page", new { pageID = page.PageID });
+                return RedirectToAction("EditFromID", "Page", new { pageID = section.PageID });
+            }
+
+            return View(section);
         }
 
         [Authorize]
         public ActionResult Delete(int pageID, int sectionID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
-            SectionModel section = db.SelectSection(sectionID);
+            DBSectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
 
             return View(section);
@@ -115,7 +127,7 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Delete(SectionModel section)
+        public ActionResult Delete(DBSectionModel section)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.DeleteSection(section.SectionID);
@@ -131,6 +143,30 @@ namespace TheWritersNet.Controllers
             db.DeleteSectionFromPage(sectionID, pageID);
             
             return RedirectToAction("EditFromID", "Page", new { pageID });
+        }
+
+        private SectionModel ConvertSectionModel(DBSectionModel section)
+        {
+            return new SectionModel()
+            {
+                PageID = section.PageID,
+                DisplayTitle = section.DisplayTitle,
+                Position = section.Position,
+                Text = section.Text,
+                Title = section.Title
+            };
+        }
+
+        private DBSectionModel ConvertSectionModel(SectionModel section)
+        {
+            return new DBSectionModel()
+            {
+                PageID = section.PageID,
+                DisplayTitle = section.DisplayTitle,
+                Position = section.Position,
+                Text = section.Text,
+                Title = section.Title
+            };
         }
     }
 }

@@ -112,19 +112,19 @@ namespace TheWritersNetData.DBConnectors
         
         #region Section Positions
 
-        void InsertPositions(List<SectionModel> sections);
+        void InsertPositions(List<DBSectionModel> sections);
 
-        void UpdatePosition(SectionModel section);
+        void UpdatePosition(DBSectionModel section);
 
-        void DeletePositions(List<SectionModel> sections);
+        void DeletePositions(List<DBSectionModel> sections);
 
-        List<SectionModel> SelectPagePositions(int pageID);
+        List<DBSectionModel> SelectPagePositions(int pageID);
 
         #endregion
 
         #region Section Links
 
-        void MergeSectionLinks(List<SectionLinkModel> sections);
+        void MergeSectionLinks(List<SectionLinkModel> links, int sectionID);
 
         void InsertSectionLinks(List<SectionLinkModel> sections);
 
@@ -136,19 +136,19 @@ namespace TheWritersNetData.DBConnectors
 
         #region Sections
 
-        int InsertSection(SectionModel section);
+        int InsertSection(DBSectionModel section);
 
-        void UpdateSection(SectionModel section);
+        void UpdateSection(DBSectionModel section);
 
         void DeleteSection(int sectionID);
 
         void DeleteSectionFromPage(int sectionID, int pageID);
 
-        SectionModel SelectSection(int sectionID);
+        DBSectionModel SelectSection(int sectionID);
 
-        List<SectionModel> SelectEditPageSections(int pageID);
+        List<DBSectionModel> SelectEditPageSections(int pageID);
 
-        List<SectionModel> SelectViewPageSections(int pageID);
+        List<DBSectionModel> SelectViewPageSections(int pageID);
 
         #endregion
     }

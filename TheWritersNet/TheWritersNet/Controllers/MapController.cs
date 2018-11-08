@@ -90,8 +90,8 @@ namespace TheWritersNet.Controllers
                     else
                     {
                         // This page still exists, make sure the title is up to date
-                        pageDictionary.Remove(node.spine);
                         node.title = pageDictionary[node.spine].Title;
+                        pageDictionary.Remove(node.spine);
                         n++;
                     }
                 }
@@ -121,7 +121,7 @@ namespace TheWritersNet.Controllers
 
                 // Save the new map
                 sMap = serializer.Serialize(map);
-                db.InsertWebsiteUser(new WebsiteUserModel() { LoginID = loginID, WebsiteID = websiteID, Map = sMap, History = "" });
+                db.UpdateWebsiteUser(new WebsiteUserModel() { LoginID = loginID, WebsiteID = websiteID, Map = sMap, History = "" });
             }
             else
                 sMap = user.Map;

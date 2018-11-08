@@ -208,6 +208,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PageModel.cs" />
+    <Compile Include="Models\SectionModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\WebsiteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -366,7 +367,7 @@
       <Project>{4b23d412-32cd-4457-9dd2-3b985c185fa9}</Project>
       <Name>TheWritersNetData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TWNLogic\TheWritersNetLogic.csproj">
+    <ProjectReference Include="..\TheWritersNetLogic\TheWritersNetLogic.csproj">
       <Project>{a5c8ccbc-d89a-4d42-8d62-ad6aa010da2d}</Project>
       <Name>TheWritersNetLogic</Name>
     </ProjectReference>

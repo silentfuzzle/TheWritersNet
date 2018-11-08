@@ -13,6 +13,6 @@ namespace TheWritersNet.Models
         public string Title { get; set; }
         public bool HomePage { get; set; }
         public bool DisplayTitle { get; set; }
-        public List<SectionModel> Sections { get; set; }
+        public List<DBSectionModel> Sections { get; set; }
     }
 }

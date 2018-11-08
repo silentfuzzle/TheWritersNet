@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TheWritersNetData.Models
 {
-    public class SectionModel
+    public class DBSectionModel
     {
         public int PageID { get; set; }
         public int SectionID { get; set; }

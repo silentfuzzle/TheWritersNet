@@ -390,7 +390,7 @@ namespace TheWritersNetData.DBConnectors
 
         #region Section Positions
 
-        public void InsertPositions(List<SectionModel> sections)
+        public void InsertPositions(List<DBSectionModel> sections)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -398,9 +398,9 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public void UpdatePosition(SectionModel section)
+        public void UpdatePosition(DBSectionModel section)
         {
-            List<SectionModel> sections = new List<SectionModel>() { section };
+            List<DBSectionModel> sections = new List<DBSectionModel>() { section };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -408,7 +408,7 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public void DeletePositions(List<SectionModel> sections)
+        public void DeletePositions(List<DBSectionModel> sections)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -416,11 +416,11 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public List<SectionModel> SelectPagePositions(int pageID)
+        public List<DBSectionModel> SelectPagePositions(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<SectionModel>("WebsiteData.spPosition_SelectForPage @PageID", new { PageID = pageID }).ToList();
+                return connection.Query<DBSectionModel>("WebsiteData.spPosition_SelectForPage @PageID", new { PageID = pageID }).ToList();
             }
         }
 
@@ -428,36 +428,43 @@ namespace TheWritersNetData.DBConnectors
 
         #region Section Links
 
-        public void MergeSectionLinks(List<SectionLinkModel> sections)
+        public void MergeSectionLinks(List<SectionLinkModel> links, int sectionID)
         {
-            List<SectionLinkModel> tempSections = SelectSectionLinks(sections[0].SectionID);
-            List<SectionLinkModel> removeSections = new List<SectionLinkModel>();
-            Dictionary<int, SectionLinkModel> existingSections = new Dictionary<int, SectionLinkModel>();
-            foreach (SectionLinkModel link in tempSections)
+            List<SectionLinkModel> tempLinks = SelectSectionLinks(sectionID);
+            List<SectionLinkModel> removeLinks = new List<SectionLinkModel>();
+            Dictionary<int, SectionLinkModel> existingLinks = new Dictionary<int, SectionLinkModel>();
+            foreach (SectionLinkModel link in tempLinks)
             {
-                if (existingSections.ContainsKey(link.PageID))
-                    removeSections.Add(link);
+                if (existingLinks.ContainsKey(link.PageID))
+                    // Remove any duplicates from the database
+                    removeLinks.Add(link);
                 else
-                    existingSections.Add(link.PageID, link);
+                    // Store existing links for reference
+                    existingLinks.Add(link.PageID, link);
             }
 
-            Dictionary<int, SectionLinkModel> insertSections = new Dictionary<int, SectionLinkModel>();
-            foreach (SectionLinkModel link in sections)
+            // Set all unique new links to insert into the database
+            Dictionary<int, SectionLinkModel> insertLinks = new Dictionary<int, SectionLinkModel>();
+            foreach (SectionLinkModel link in links)
             {
-                if (!insertSections.ContainsKey(link.PageID))
-                    insertSections.Add(link.PageID, link);
+                if (!insertLinks.ContainsKey(link.PageID))
+                    insertLinks.Add(link.PageID, link);
             }
 
-            foreach (SectionLinkModel link in existingSections.Values)
+            // Check the new links against the existing links
+            foreach (SectionLinkModel link in existingLinks.Values)
             {
-                if (insertSections.ContainsKey(link.PageID))
-                    insertSections.Remove(link.PageID);
+                if (insertLinks.ContainsKey(link.PageID))
+                    // Don't insert links that already exist in the database
+                    insertLinks.Remove(link.PageID);
                 else
-                    removeSections.Add(link);
+                    // Remove existing links that don't exist in the list of new links
+                    removeLinks.Add(link);
             }
             
-            InsertSectionLinks(insertSections.Values.ToList());
-            DeleteSectionLinks(removeSections);
+            // Update the database
+            InsertSectionLinks(insertLinks.Values.ToList());
+            DeleteSectionLinks(removeLinks);
         }
 
         public void InsertSectionLinks(List<SectionLinkModel> sections)
@@ -509,9 +516,9 @@ namespace TheWritersNetData.DBConnectors
 
         #region Sections
 
-        public int InsertSection(SectionModel section)
+        public int InsertSection(DBSectionModel section)
         {
-            List<SectionModel> sections = new List<SectionModel>() { section };
+            List<DBSectionModel> sections = new List<DBSectionModel>() { section };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -528,9 +535,9 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public void UpdateSection(SectionModel section)
+        public void UpdateSection(DBSectionModel section)
         {
-            List<SectionModel> sections = new List<SectionModel>() { section };
+            List<DBSectionModel> sections = new List<DBSectionModel>() { section };
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
@@ -554,11 +561,11 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
-        public SectionModel SelectSection(int sectionID)
+        public DBSectionModel SelectSection(int sectionID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                IEnumerable<SectionModel> sections = connection.Query<SectionModel>("WebsiteData.spSection_Select @SectionID", new { SectionID = sectionID }).ToList();
+                IEnumerable<DBSectionModel> sections = connection.Query<DBSectionModel>("WebsiteData.spSection_Select @SectionID", new { SectionID = sectionID }).ToList();
                 if (sections.Count() > 0)
                     return sections.First();
             }
@@ -566,19 +573,19 @@ namespace TheWritersNetData.DBConnectors
             return null;
         }
 
-        public List<SectionModel> SelectEditPageSections(int pageID)
+        public List<DBSectionModel> SelectEditPageSections(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPageEdit @PageID", new { PageID = pageID }).ToList();
+                return connection.Query<DBSectionModel>("WebsiteData.spSection_SelectForPageEdit @PageID", new { PageID = pageID }).ToList();
             }
         }
 
-        public List<SectionModel> SelectViewPageSections(int pageID)
+        public List<DBSectionModel> SelectViewPageSections(int pageID)
         {
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                return connection.Query<SectionModel>("WebsiteData.spSection_SelectForPageView @PageID", new { PageID = pageID }).ToList();
+                return connection.Query<DBSectionModel>("WebsiteData.spSection_SelectForPageView @PageID", new { PageID = pageID }).ToList();
             }
         }
 
