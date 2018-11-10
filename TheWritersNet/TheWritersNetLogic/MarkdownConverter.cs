@@ -9,9 +9,10 @@ namespace TheWritersNetLogic
 {
     public static class MarkdownConverter
     {
-        public static string MarkdownToHTML(string markdown)
+        public static string MarkdownToHTML(string markdown, int websiteID)
         {
-            return HyperlinkToHTML(NewlineToHTML(HashtagToHTML(FormattingToHTML(markdown))));
+            markdown = NewlineToHTML(HashtagToHTML(FormattingToHTML(markdown)));
+            return HyperlinkToHTML(markdown, websiteID);
         }
 
         public static List<SectionLinkModel> FindInternalLinks(string markdown, int sectionID)
@@ -58,9 +59,9 @@ namespace TheWritersNetLogic
             return markdown;
         }
 
-        private static string HyperlinkToHTML(string markdown)
+        private static string HyperlinkToHTML(string markdown, int websiteID)
         {
-            HTMLParser parser = new HTMLParser();
+            HTMLParser parser = new HTMLParser(websiteID);
             parser.Execute(markdown);
 
             return parser.Markdown;

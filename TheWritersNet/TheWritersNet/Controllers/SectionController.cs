@@ -51,14 +51,14 @@ namespace TheWritersNet.Controllers
         }
 
         [Authorize]
-        public ActionResult Display(int pageID, int sectionID)
+        public ActionResult Display(int websiteID, int pageID, int sectionID)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             DBSectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
-            section.Text = MarkdownConverter.MarkdownToHTML(section.Text);
+            section.Text = MarkdownConverter.MarkdownToHTML(section.Text, websiteID);
 
-            return View(section);
+            return View(ConvertSectionModel(section));
         }
 
         [Authorize]
@@ -162,6 +162,7 @@ namespace TheWritersNet.Controllers
             return new DBSectionModel()
             {
                 PageID = section.PageID,
+                SectionID = section.SectionID,
                 DisplayTitle = section.DisplayTitle,
                 Position = section.Position,
                 Text = section.Text,

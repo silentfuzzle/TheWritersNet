@@ -28,7 +28,7 @@ namespace TheWritersNet.Controllers
             page.Sections = db.SelectViewPageSections(pageID);
 
             foreach (DBSectionModel section in page.Sections)
-                section.Text = MarkdownConverter.MarkdownToHTML(section.Text);
+                section.Text = MarkdownConverter.MarkdownToHTML(section.Text, dbPage.WebsiteID);
 
             return View("Display", "_WebsiteLayout", page);
         }

@@ -108,8 +108,10 @@ namespace TheWritersNetData.DBConnectors
 
         List<DBPageModel> SelectWebsitePages(int websiteID);
 
+        bool CheckPageExistence(int pageID, int websiteID);
+
         #endregion
-        
+
         #region Section Positions
 
         void InsertPositions(List<DBSectionModel> sections);

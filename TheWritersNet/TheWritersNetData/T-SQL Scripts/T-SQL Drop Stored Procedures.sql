@@ -16,6 +16,7 @@ DROP PROCEDURE WebsiteData.spPosition_Insert;
 DROP PROCEDURE WebsiteData.spPosition_Update;
 DROP PROCEDURE WebsiteData.spPage_Select;
 DROP PROCEDURE WebsiteData.spPage_SelectForWebsite;
+CREATE PROCEDURE WebsiteData.spPage_SelectExistence
 DROP PROCEDURE WebsiteData.spPage_Delete;
 DROP PROCEDURE WebsiteData.spPage_Update;
 DROP PROCEDURE WebsiteData.spPage_Insert;

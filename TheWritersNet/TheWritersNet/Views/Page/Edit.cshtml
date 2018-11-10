@@ -79,7 +79,7 @@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
-                @Html.ActionLink("View", "Display", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
+                @Html.ActionLink("View", "Display", "Section", new { websiteID = Model.WebsiteID, pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
                 @Html.ActionLink("Delete", "Delete", "Section", new { pageID = Model.PageID, sectionID = item.SectionID }, new { }) |
                 @Ajax.ActionLink("Remove from Page", "Remove", "Section", new { sectionID = item.SectionID, pageID = Model.PageID }, new AjaxOptions { HttpMethod = "POST" })
             </td>

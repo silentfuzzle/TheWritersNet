@@ -507,7 +507,6 @@ AS
 	SET NOCOUNT ON;
 
 	DECLARE @UserID int;
-
 	EXEC WebsiteData.spUser_SelectID @LoginID, @UserID OUTPUT;
 
 	SELECT WebsiteUser.History, WebsiteUser.Map, WebsiteUser.Dirty
@@ -570,6 +569,16 @@ AS
 	DELETE [Page]
 	FROM WebsiteData.[Page]
 	WHERE [Page].PageID = @PageID;
+GO
+
+CREATE PROCEDURE WebsiteData.spPage_SelectExistence
+	@PageID int, @WebsiteID int
+AS
+	SET NOCOUNT ON;
+
+	SELECT WebsitePage.PageID
+	FROM WebsiteData.WebsitePage
+	WHERE WebsitePage.PageID = @PageID AND WebsitePage.WebsiteID = @WebsiteID;
 GO
 
 CREATE PROCEDURE WebsiteData.spPage_SelectForWebsite
@@ -656,7 +665,6 @@ AS
 	SET NOCOUNT ON;
 
 	DECLARE @WebsiteID int;
-
 	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 	
 	SELECT 
@@ -673,14 +681,26 @@ CREATE PROCEDURE WebsiteData.spSectionLink_Insert
 	@SectionID int, @PageID int
 AS
 	SET NOCOUNT ON;
-	
-	INSERT INTO WebsiteData.SectionLink (SectionID, PageID)
-	VALUES(@SectionID, @PageID);
-	
-	DECLARE @WebsiteID int;
-	SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
 
-	EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
+	IF EXISTS (SELECT [Page].PageID FROM WebsiteData.[Page] WHERE [Page].PageID = @PageID)
+		BEGIN
+			DECLARE @PageWebsiteID int;
+			SET @PageWebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+			DECLARE @SectionWebsiteID int;
+			SET @SectionWebsiteID = (SELECT TOP 1 Section.WebsiteID FROM WebsiteData.Section WHERE Section.SectionID = @SectionID);
+
+			IF (@PageWebsiteID = @SectionWebsiteID)
+				BEGIN
+					INSERT INTO WebsiteData.SectionLink (SectionID, PageID)
+					VALUES(@SectionID, @PageID);
+	
+					DECLARE @WebsiteID int;
+					SET @WebsiteID = (SELECT TOP 1 WebsitePage.WebsiteID FROM WebsiteData.WebsitePage WHERE WebsitePage.PageID = @PageID);
+
+					EXEC WebsiteData.spWebsiteUser_UpdateDirty @WebsiteID;
+				END
+		END
 GO
 
 CREATE PROCEDURE WebsiteData.spSectionLink_Delete

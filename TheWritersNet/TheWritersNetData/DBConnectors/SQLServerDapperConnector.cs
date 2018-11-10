@@ -386,6 +386,15 @@ namespace TheWritersNetData.DBConnectors
             }
         }
 
+        public bool CheckPageExistence(int pageID, int websiteID)
+        {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                IEnumerable<DBPageModel> pages = connection.Query<DBPageModel>("WebsiteData.spPage_SelectExistence @PageID, @WebsiteID", new { PageID = pageID, WebsiteID = websiteID });
+                return (pages.Count() > 0);
+            }
+        }
+
         #endregion
 
         #region Section Positions

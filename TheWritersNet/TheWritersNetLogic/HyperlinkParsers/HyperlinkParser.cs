@@ -65,6 +65,7 @@ namespace TheWritersNetLogic.HyperlinkParsers
                         ProcessHyperlink(hyperlink, hyperlinkType);
 
                         nextSymbol = "[";
+                        Index = lastIndex;
                     }
                 }
             }
