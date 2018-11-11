@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Net;
 using System.Web.Mvc;
 using TheWritersNet.Models;
 using TheWritersNetData.Models;
@@ -69,9 +70,10 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Create(SectionModel section)
         {
-            if (ModelState.IsValid)
+            if (GetValid(section))
             {
                 IDBConnector db = DBConnectorFactory.GetDBConnector();
                 int index = db.InsertSection(ConvertSectionModel(section));
@@ -97,9 +99,10 @@ namespace TheWritersNet.Controllers
 
         [Authorize]
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Edit(SectionModel section)
         {
-            if (ModelState.IsValid)
+            if (GetValid(section))
             {
                 IDBConnector db = DBConnectorFactory.GetDBConnector();
                 DBSectionModel dbSection = ConvertSectionModel(section);
@@ -122,12 +125,12 @@ namespace TheWritersNet.Controllers
             DBSectionModel section = db.SelectSection(sectionID);
             section.PageID = pageID;
 
-            return View(section);
+            return View(ConvertSectionModel(section));
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Delete(DBSectionModel section)
+        public ActionResult Delete(SectionModel section)
         {
             IDBConnector db = DBConnectorFactory.GetDBConnector();
             db.DeleteSection(section.SectionID);
@@ -168,6 +171,23 @@ namespace TheWritersNet.Controllers
                 Text = section.Text,
                 Title = section.Title
             };
+        }
+
+        private bool GetValid(SectionModel section)
+        {
+            bool valid = ModelState.IsValid;
+            if (section.Title.Contains(">") || section.Title.Contains("<"))
+            {
+                section.Title = "";
+                valid = false;
+            }
+            if (section.Text.Contains(">") || section.Text.Contains("<"))
+            {
+                section.Text = "";
+                valid = false;
+            }
+
+            return valid;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,8 @@ namespace TheWritersNetLogic.HyperlinkParsers
         protected override void ProcessHyperlink(string hyperlink, char hyperlinkType)
         {
             Markdown = Markdown.Remove(Brackets[1], Index - Brackets[1] + 1);
-            bool maliciousCodeDetected = (hyperlink.Contains("javascript:"));
-
+            bool maliciousCodeDetected = (hyperlink.Contains("javascript:") || hyperlink.Contains("\"") || hyperlink.Contains("&"));
+            
             if (hyperlinkType == '?')
             {
                 // Make sure the parenthesis only contain a number, the ID of the page to link to

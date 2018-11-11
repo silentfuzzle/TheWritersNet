@@ -531,16 +531,16 @@ namespace TheWritersNetData.DBConnectors
 
             using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
             {
-                var p = new DynamicParameters();
-                p.Add("PageID", section.PageID);
-                p.Add("Title", section.Title);
-                p.Add("Text", section.Text);
-                p.Add("Position", section.Position);
-                p.Add("DisplayTitle", section.DisplayTitle);
-                p.Add("SectionID", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                var parameters = new DynamicParameters();
+                parameters.Add("PageID", section.PageID);
+                parameters.Add("Title", section.Title);
+                parameters.Add("Text", section.Text);
+                parameters.Add("Position", section.Position);
+                parameters.Add("DisplayTitle", section.DisplayTitle);
+                parameters.Add("SectionID", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                connection.Query<int>("WebsiteData.spSection_Insert", p, commandType: CommandType.StoredProcedure);
-                return p.Get<int>("SectionID");
+                connection.Query<int>("WebsiteData.spSection_Insert", parameters, commandType: CommandType.StoredProcedure);
+                return parameters.Get<int>("SectionID");
             }
         }
 

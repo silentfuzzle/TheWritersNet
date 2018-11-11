@@ -11,6 +11,7 @@ namespace TheWritersNetLogic
     {
         public static string MarkdownToHTML(string markdown, int websiteID)
         {
+            markdown = markdown.Replace("<", "&lt;").Replace(">", "&gt;");
             markdown = NewlineToHTML(HashtagToHTML(FormattingToHTML(markdown)));
             return HyperlinkToHTML(markdown, websiteID);
         }
