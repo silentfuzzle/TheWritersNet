@@ -12,14 +12,17 @@ namespace TheWritersNet.Models
         public int SectionID { get; set; }
 
         [Required]
+        [RegularExpression(StringKeys.BRACKET_REGEX, ErrorMessage = StringKeys.BRACKET_ERROR_MSG)]
         public string Title { get; set; }
 
         [Required]
+        [RegularExpression(StringKeys.BRACKET_REGEX, ErrorMessage = StringKeys.BRACKET_ERROR_MSG)]
         public string Text { get; set; }
 
         [Required]
-        public string Position { get; set; }
+        public int Position { get; set; }
 
         public bool DisplayTitle { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

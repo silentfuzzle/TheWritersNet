@@ -401,10 +401,11 @@ namespace TheWritersNetData.DBConnectors
 
         public void InsertPositions(List<DBSectionModel> sections)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
-            {
-                connection.Execute("WebsiteData.spPosition_Insert @PageID, @SectionID, @Position, @DisplayTitle", sections);
-            }
+            if (sections.Count > 0)
+                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    connection.Execute("WebsiteData.spPosition_Insert @PageID, @SectionID, @Position, @DisplayTitle", sections);
+                }
         }
 
         public void UpdatePosition(DBSectionModel section)
@@ -419,10 +420,11 @@ namespace TheWritersNetData.DBConnectors
 
         public void DeletePositions(List<DBSectionModel> sections)
         {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
-            {
-                connection.Execute("WebsiteData.spPosition_Delete @PageID, @SectionID", sections);
-            }
+            if (sections.Count > 0)
+                using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    connection.Execute("WebsiteData.spPosition_Delete @PageID, @SectionID", sections);
+                }
         }
 
         public List<DBSectionModel> SelectPagePositions(int pageID)

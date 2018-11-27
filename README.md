@@ -14,9 +14,7 @@
 * Handle edge cases in markdown mistakes
 * Prevent users from adding links to internal pages that don't belong to their website
 * Test website isn't creating a link in the map in both directions
-* Alert users that angle brackets aren't allowed
-* In this version of the website, positions should accept numbers only.
-* HTML-encode markdown instead of only replacing angle brackets?
+* Perhaps create a separate DB and View Model for Section positions.
 
 ### Core Website Functionality
 * Display Adventurous Reader map when user is viewing pages

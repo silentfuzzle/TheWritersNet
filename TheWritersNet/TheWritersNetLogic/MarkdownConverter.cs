@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Net;
 using TheWritersNetData.Models;
 using TheWritersNetLogic.HyperlinkParsers;
 
@@ -11,7 +12,7 @@ namespace TheWritersNetLogic
     {
         public static string MarkdownToHTML(string markdown, int websiteID)
         {
-            markdown = markdown.Replace("<", "&lt;").Replace(">", "&gt;");
+            markdown = WebUtility.HtmlEncode(markdown);
             markdown = NewlineToHTML(HashtagToHTML(FormattingToHTML(markdown)));
             return HyperlinkToHTML(markdown, websiteID);
         }

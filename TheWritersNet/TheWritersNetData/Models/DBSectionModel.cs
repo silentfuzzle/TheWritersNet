@@ -10,7 +10,6 @@ namespace TheWritersNetData.Models
     {
         public int PageID { get; set; }
         public int SectionID { get; set; }
-        public bool IsSelected { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
         public string Position { get; set; }
